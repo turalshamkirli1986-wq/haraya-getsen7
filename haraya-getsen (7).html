@@ -1,0 +1,2517 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Haraya Getsən</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0D2B55;--orange:#FF6B00;--og:#FF8C35;--white:#fff;--gray:#8899AA;--card:#162f5a;--dark:#060e1a}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:var(--dark);color:var(--white);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;max-width:100vw}
+
+/* ===== API KEY SCREEN ===== */
+.api-screen{position:fixed;inset:0;background:var(--dark);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px}
+.api-box{background:var(--card);border:1px solid rgba(255,107,0,0.3);border-radius:24px;padding:32px 24px;max-width:400px;width:100%;text-align:center}
+.api-logo{font-size:52px;margin-bottom:14px}
+.api-box h2{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:8px}
+.api-box h2 span{color:var(--orange)}
+.api-box p{font-size:13px;color:var(--gray);line-height:1.6;margin-bottom:16px}
+.api-steps{background:rgba(255,255,255,0.04);border-radius:12px;padding:14px;margin-bottom:16px;text-align:left}
+.api-step{font-size:12px;color:rgba(255,255,255,0.75);margin-bottom:8px;display:flex;gap:8px;line-height:1.5}
+.api-step:last-child{margin-bottom:0}
+.api-step a{color:var(--orange);text-decoration:none;font-weight:600}
+.api-step strong{color:white}
+.free-badge{background:rgba(0,255,136,0.12);border:1px solid rgba(0,255,136,0.3);border-radius:100px;padding:6px 16px;font-size:12px;font-weight:700;color:#00FF88;display:inline-block;margin-bottom:16px}
+.model-select-wrap{margin-bottom:14px;text-align:left}
+.model-label{font-size:11px;color:var(--gray);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px}
+.model-select{width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--white);font-family:'DM Sans',sans-serif;outline:none;cursor:pointer}
+.model-select:focus{border-color:var(--orange)}
+.api-input-wrap{position:relative;margin-bottom:12px}
+.api-key-inp{width:100%;background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,107,0,0.3);border-radius:12px;padding:13px 44px 13px 14px;font-size:14px;color:var(--white);font-family:'DM Sans',sans-serif;outline:none}
+.api-key-inp:focus{border-color:var(--orange)}
+.api-key-inp::placeholder{color:rgba(255,255,255,0.3)}
+.api-eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--gray);cursor:pointer;font-size:18px}
+.api-submit{width:100%;background:var(--orange);border:none;border-radius:12px;padding:13px;color:white;font-family:'Syne',sans-serif;font-weight:700;font-size:15px;cursor:pointer;margin-bottom:10px}
+.api-submit:hover{background:var(--og)}
+.api-note{font-size:11px;color:var(--gray);line-height:1.5}
+.api-note a{color:var(--orange);text-decoration:none}
+.api-err{color:#FF4444;font-size:12px;margin-bottom:10px;display:none}
+.api-err.show{display:block}
+.api-skip{background:none;border:none;color:var(--gray);font-size:12px;cursor:pointer;margin-top:10px;font-family:'DM Sans',sans-serif;text-decoration:underline;display:block;width:100%;text-align:center}
+
+/* ===== HEADER ===== */
+header{position:fixed;top:0;left:0;right:0;z-index:100;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;background:rgba(6,14,26,0.9);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,107,0,0.15)}
+.logo{display:flex;align-items:center;gap:10px;cursor:pointer;text-decoration:none}
+.logo-icon{width:38px;height:38px;background:var(--orange);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.logo-text{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;color:var(--white)}
+.logo-text span{color:var(--orange)}
+.header-right{display:flex;align-items:center;gap:10px}
+.ai-badge{background:rgba(255,107,0,0.15);border:1px solid rgba(255,107,0,0.3);border-radius:100px;padding:5px 12px;font-size:11px;font-weight:600;color:var(--orange);display:flex;align-items:center;gap:5px}
+.ai-dot{width:6px;height:6px;background:#00FF88;border-radius:50%;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.key-btn{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:5px 10px;color:var(--gray);font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif}
+
+/* ===== MAIN CONTENT ===== */
+.main{padding-top:66px;min-height:100vh}
+
+/* ===== NEARBY SECTION ===== */
+.nearby-section{position:relative;z-index:10;padding:20px}
+.nearby-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.nearby-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:800}
+.nearby-title span{color:var(--orange)}
+.loc-badge{background:rgba(0,212,180,0.15);border:1px solid rgba(0,212,180,0.3);border-radius:100px;padding:4px 12px;font-size:11px;color:#00D4C0;display:flex;align-items:center;gap:5px}
+.nearby-scroll{display:flex;gap:12px;overflow-x:auto;padding-bottom:8px}
+.nearby-scroll::-webkit-scrollbar{display:none}
+.nearby-card{flex-shrink:0;width:160px;background:var(--card);border:1px solid rgba(255,255,255,0.07);border-radius:16px;overflow:hidden;cursor:pointer;transition:all 0.25s}
+.nearby-card:hover{transform:translateY(-4px);border-color:rgba(255,107,0,0.4)}
+.nearby-img{height:100px;display:flex;align-items:center;justify-content:center;font-size:44px;position:relative}
+.nearby-dist{position:absolute;bottom:6px;right:8px;background:rgba(0,0,0,0.7);border-radius:6px;padding:2px 7px;font-size:10px;color:#00D4C0}
+.nearby-info{padding:10px 12px}
+.nearby-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin-bottom:3px}
+.nearby-type{font-size:11px;color:var(--gray)}
+
+/* ===== SEARCH ===== */
+.search-section{padding:0 20px 20px}
+.search-wrap{position:relative}
+.search-box{width:100%;background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,107,0,0.25);border-radius:14px;padding:14px 50px 14px 46px;font-size:15px;color:var(--white);font-family:'DM Sans',sans-serif;outline:none;transition:all 0.3s}
+.search-box::placeholder{color:rgba(255,255,255,0.35)}
+.search-box:focus{border-color:var(--orange);box-shadow:0 0 0 3px rgba(255,107,0,0.1)}
+.s-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:17px;opacity:0.5}
+.s-btn{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:var(--orange);border:none;border-radius:9px;padding:8px 14px;color:white;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;cursor:pointer}
+.tags{display:flex;gap:8px;overflow-x:auto;padding:10px 20px 0;margin-bottom:4px}
+.tags::-webkit-scrollbar{display:none}
+.tag{flex-shrink:0;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:100px;padding:6px 14px;font-size:12px;color:var(--gray);cursor:pointer;transition:all 0.2s;white-space:nowrap}
+.tag:hover,.tag.active{background:rgba(255,107,0,0.2);border-color:var(--orange);color:var(--orange)}
+
+/* ===== CITY PAGE ===== */
+.city-page{display:none}
+.city-page.show{display:block}
+
+/* Banner video area */
+.city-banner{position:relative;height:260px;overflow:hidden;background:#050f1e}
+.banner-video-wrap{position:absolute;inset:0}
+.banner-video-wrap video{width:100%;height:100%;object-fit:cover;opacity:0.6}
+.banner-css{position:absolute;inset:0;overflow:hidden}
+.banner-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(6,14,26,1) 0%,rgba(6,14,26,0.3) 50%,transparent 100%);z-index:2}
+.banner-content{position:absolute;bottom:20px;left:20px;right:20px;z-index:3}
+.banner-flag{font-size:32px;margin-bottom:6px;display:block}
+.banner-title{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;letter-spacing:-1px;line-height:1;margin-bottom:4px}
+.banner-sub{font-size:12px;color:rgba(255,255,255,0.6);letter-spacing:2px}
+.banner-dots{position:absolute;bottom:20px;right:20px;z-index:3;display:flex;gap:5px}
+.bdot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.3);cursor:pointer;transition:all 0.3s}
+.bdot.active{background:var(--orange);width:16px;border-radius:3px}
+
+/* City tabs */
+.city-tabs{display:flex;gap:8px;padding:16px 20px 12px;overflow-x:auto}
+.city-tabs::-webkit-scrollbar{display:none}
+.ctab{flex-shrink:0;background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.08);border-radius:100px;padding:7px 16px;font-size:12px;font-weight:600;color:var(--gray);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s;white-space:nowrap}
+.ctab.active,.ctab:hover{background:var(--orange);border-color:var(--orange);color:white}
+
+/* Video Feed */
+.video-feed{display:none;flex-direction:column;gap:0;padding:0 20px}
+.video-feed.active{display:flex}
+
+.vcard{border-radius:20px;overflow:hidden;margin-bottom:16px;animation:fadeUp 0.4s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.vcard:nth-child(1){animation-delay:.05s}.vcard:nth-child(2){animation-delay:.12s}.vcard:nth-child(3){animation-delay:.19s}
+
+/* CSS animated video screen */
+.vscreen{position:relative;width:100%;height:380px;overflow:hidden;cursor:pointer;background:#050f1e}
+.vscreen video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}
+.vcss-bg{position:absolute;inset:0;z-index:0}
+.vcss-layer{position:absolute;border-radius:50%;filter:blur(50px);animation:layerMove 8s ease-in-out infinite alternate}
+@keyframes layerMove{0%{transform:translate(0,0) scale(1)}100%{transform:translate(15px,-10px) scale(1.1)}}
+.vcss-emoji{position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);font-size:72px;z-index:2;filter:drop-shadow(0 10px 30px rgba(0,0,0,0.5));animation:emojiFloat 4s ease-in-out infinite}
+@keyframes emojiFloat{0%,100%{transform:translate(-50%,-60%) scale(1)}50%{transform:translate(-50%,-65%) scale(1.05)}}
+.voverlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.85) 0%,rgba(0,0,0,0.1) 50%,transparent 100%);z-index:3}
+.vplay-btn{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:5}
+.vplay-circle{width:56px;height:56px;background:rgba(255,107,0,0.85);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;border:2px solid rgba(255,255,255,0.3);backdrop-filter:blur(4px);transition:all 0.2s}
+.vplay-circle:hover{transform:scale(1.1);background:var(--orange)}
+.vcard.playing .vplay-btn{display:none}
+.vcard.playing .vscreen video{z-index:4}
+.vtag-badge{position:absolute;top:12px;left:12px;z-index:6;background:var(--orange);border-radius:6px;padding:3px 10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px}
+.vdur{position:absolute;top:12px;right:12px;z-index:6;background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);border-radius:6px;padding:3px 8px;font-size:11px;font-weight:600}
+.vlive{position:absolute;top:38px;left:12px;z-index:6;background:#FF0000;border-radius:4px;padding:2px 8px;font-size:10px;font-weight:700;display:none;align-items:center;gap:4px}
+.vlive::before{content:'';width:5px;height:5px;background:white;border-radius:50%;animation:pulse 1s infinite}
+.vcard.playing .vlive{display:flex}
+.vprogress{position:absolute;bottom:0;left:0;right:0;height:3px;background:rgba(255,255,255,0.15);z-index:6}
+.vpbar{height:100%;background:var(--orange);width:0}
+.vcard.playing .vpbar{animation:vProgress 12s linear forwards}
+@keyframes vProgress{0%{width:0}100%{width:100%}}
+.vside{position:absolute;right:12px;bottom:90px;z-index:6;display:flex;flex-direction:column;gap:10px;align-items:center}
+.vsb{width:38px;height:38px;background:rgba(0,0,0,0.5);backdrop-filter:blur(8px);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;border:1px solid rgba(255,255,255,0.12);transition:all 0.2s}
+.vsb:hover{background:rgba(255,107,0,0.5);transform:scale(1.1)}
+.vsb-count{font-size:10px;color:rgba(255,255,255,0.5);text-align:center;margin-top:-7px}
+.followed .vsb.follow-btn{background:rgba(255,107,0,0.5);border-color:var(--orange)}
+
+.vbar{background:linear-gradient(180deg,#0a1520 0%,#0d1f35 100%);padding:14px 16px 16px}
+.vbar-tag{display:inline-block;background:var(--orange);border-radius:5px;padding:2px 9px;font-size:10px;font-weight:700;text-transform:uppercase;margin-bottom:6px}
+.vbar-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;margin-bottom:4px}
+.vbar-desc{font-size:12px;color:rgba(255,255,255,0.6);margin-bottom:12px;line-height:1.5}
+.vbar-acts{display:flex;gap:8px;flex-wrap:wrap}
+.vba{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:100px;padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;color:white;font-family:'DM Sans',sans-serif;display:flex;align-items:center;gap:5px;transition:all 0.2s;text-decoration:none}
+.vba:hover{background:rgba(255,107,0,0.3);border-color:var(--orange)}
+.vba.taxi{background:rgba(255,193,7,0.12);border-color:rgba(255,193,7,0.3);color:#FFC107}
+.vba.taxi:hover{background:#FFC107;color:black;border-color:#FFC107}
+.vba.book{background:rgba(0,120,212,0.15);border-color:rgba(0,120,212,0.3);color:#4A90D9}
+.vba.book:hover{background:#4A90D9;color:white}
+
+/* Places grid */
+.places-wrap{display:none;padding:0 20px}
+.places-wrap.active{display:block}
+.places-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.pcard{background:var(--card);border:1px solid rgba(255,255,255,0.07);border-radius:16px;overflow:hidden;cursor:pointer;transition:all 0.25s;animation:fadeUp 0.4s ease both}
+.pcard:hover{transform:translateY(-4px);border-color:rgba(255,107,0,0.4)}
+.pcard-img{height:120px;display:flex;align-items:center;justify-content:center;font-size:44px;position:relative}
+.pcard-type{position:absolute;top:7px;left:7px;background:rgba(13,43,85,0.85);border:1px solid rgba(255,107,0,0.3);border-radius:100px;padding:2px 8px;font-size:9px;color:var(--orange);text-transform:uppercase}
+.pcard-rate{position:absolute;top:7px;right:7px;background:rgba(255,107,0,0.9);border-radius:6px;padding:2px 7px;font-size:10px;font-weight:700}
+.pcard-body{padding:10px 12px 12px}
+.pcard-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin-bottom:3px}
+.pcard-desc{font-size:11px;color:var(--gray);line-height:1.4;margin-bottom:8px}
+.pcard-foot{display:flex;align-items:center;justify-content:space-between}
+.pcard-price{font-size:11px;color:var(--orange);font-weight:600}
+.pcard-loc{font-size:10px;color:var(--gray)}
+
+/* AI TOUR PLANNER */
+.tour-wrap{display:none;padding:0 20px}
+.tour-wrap.active{display:block}
+.tour-header{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;margin-bottom:14px}
+.tour-header span{color:var(--orange)}
+.tour-days{display:flex;gap:8px;margin-bottom:16px}
+.tour-day-btn{background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.1);border-radius:100px;padding:7px 16px;font-size:12px;font-weight:600;color:var(--gray);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.2s}
+.tour-day-btn.active,.tour-day-btn:hover{background:var(--orange);border-color:var(--orange);color:white}
+.tour-gen-btn{width:100%;background:linear-gradient(135deg,var(--orange),#FF4400);border:none;border-radius:14px;padding:14px;color:white;font-family:'Syne',sans-serif;font-weight:700;font-size:15px;cursor:pointer;margin-bottom:16px;display:flex;align-items:center;justify-content:center;gap:8px}
+.tour-result{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:16px;min-height:100px;font-size:13px;line-height:1.7;color:rgba(255,255,255,0.85);display:none}
+.tour-result.show{display:block}
+.tour-loading{text-align:center;padding:20px;color:var(--gray);font-size:13px;display:none}
+.tour-loading.show{display:block}
+.tplane{font-size:28px;animation:fly 1s ease-in-out infinite;display:inline-block;margin-bottom:8px}
+@keyframes fly{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-8px) rotate(5deg)}}
+
+/* AI CHAT PANEL */
+.ai-fab{position:fixed;bottom:20px;right:20px;z-index:200;width:54px;height:54px;background:var(--orange);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;box-shadow:0 4px 20px rgba(255,107,0,0.5);transition:all 0.3s;border:none}
+.ai-fab:hover{transform:scale(1.1)}
+.ai-fab .notif{position:absolute;top:-2px;right:-2px;width:14px;height:14px;background:#FF4444;border-radius:50%;border:2px solid var(--dark);font-size:8px;display:flex;align-items:center;justify-content:center;font-weight:700}
+
+.ai-drawer{position:fixed;bottom:0;left:0;right:0;z-index:300;background:var(--card);border-radius:24px 24px 0 0;border-top:1px solid rgba(255,107,0,0.2);padding:0 0 20px;transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.16,1,0.3,1);max-height:85vh;display:flex;flex-direction:column}
+.ai-drawer.open{transform:translateY(0)}
+.ai-handle{width:40px;height:4px;background:rgba(255,255,255,0.2);border-radius:2px;margin:12px auto 0}
+.ai-dhead{padding:14px 20px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.07)}
+.ai-dname{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;display:flex;align-items:center;gap:8px}
+.ai-close-btn{background:rgba(255,255,255,0.08);border:none;border-radius:8px;width:30px;height:30px;color:white;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.ai-msgs{flex:1;overflow-y:auto;padding:14px 20px;display:flex;flex-direction:column;gap:10px;min-height:200px;max-height:400px}
+.ai-msgs::-webkit-scrollbar{width:3px}
+.ai-msgs::-webkit-scrollbar-thumb{background:rgba(255,107,0,0.3);border-radius:3px}
+.msg{max-width:88%;padding:9px 13px;border-radius:14px;font-size:13px;line-height:1.55;animation:msgIn 0.2s ease}
+@keyframes msgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.msg-ai{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.08);align-self:flex-start;border-bottom-left-radius:3px}
+.msg-user{background:var(--orange);align-self:flex-end;border-bottom-right-radius:3px}
+.msg-typing{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.08);align-self:flex-start;padding:12px 14px}
+.typing-dots{display:flex;gap:4px;align-items:center}
+.typing-dots span{width:5px;height:5px;background:var(--gray);border-radius:50%;animation:bounce 1.2s infinite}
+.typing-dots span:nth-child(2){animation-delay:.2s}
+.typing-dots span:nth-child(3){animation-delay:.4s}
+@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+.ai-quick{display:flex;gap:8px;padding:8px 20px;overflow-x:auto}
+.ai-quick::-webkit-scrollbar{display:none}
+.aiq{flex-shrink:0;background:rgba(255,107,0,0.12);border:1px solid rgba(255,107,0,0.25);border-radius:100px;padding:6px 12px;font-size:11px;color:rgba(255,255,255,0.85);cursor:pointer;white-space:nowrap;font-family:'DM Sans',sans-serif}
+.aiq:hover{background:rgba(255,107,0,0.25)}
+.ai-inp-row{padding:10px 20px 0;display:flex;gap:8px;align-items:flex-end}
+.ai-inp{flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:10px 12px;font-size:13px;color:var(--white);font-family:'DM Sans',sans-serif;outline:none;resize:none;max-height:80px;line-height:1.4}
+.ai-inp:focus{border-color:var(--orange)}
+.ai-inp::placeholder{color:rgba(255,255,255,0.3)}
+.ai-send-btn{background:var(--orange);border:none;border-radius:10px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;flex-shrink:0}
+.ai-send-btn:hover{background:var(--og)}
+.ai-send-btn:disabled{background:rgba(255,107,0,0.3);cursor:not-allowed}
+
+/* TAXI MODAL */
+.taxi-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(8px);z-index:400;align-items:flex-end;justify-content:center}
+.taxi-overlay.show{display:flex}
+.taxi-modal{background:#162f5a;border:1px solid rgba(255,193,7,0.3);border-radius:24px 24px 0 0;padding:24px 20px 32px;width:100%;max-width:500px;animation:slideUp 0.4s cubic-bezier(0.16,1,0.3,1)}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.taxi-handle{width:40px;height:4px;background:rgba(255,255,255,0.2);border-radius:2px;margin:0 auto 18px}
+.taxi-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;margin-bottom:3px}
+.taxi-dest{background:rgba(255,193,7,0.1);border:1px solid rgba(255,193,7,0.3);border-radius:12px;padding:12px 14px;margin:12px 0;display:flex;align-items:center;gap:10px}
+.taxi-apps{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.taxi-app{border-radius:13px;padding:14px;cursor:pointer;transition:all 0.2s;text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:6px;border:1px solid transparent}
+.taxi-app:hover{transform:translateY(-3px)}
+.taxi-uber{background:rgba(0,0,0,0.5);border-color:rgba(255,255,255,0.15)}
+.taxi-careem{background:rgba(0,180,80,0.15);border-color:rgba(0,180,80,0.3)}
+.taxi-bolt{background:rgba(52,211,153,0.12);border-color:rgba(52,211,153,0.25)}
+.taxi-yandex{background:rgba(255,200,0,0.1);border-color:rgba(255,200,0,0.25)}
+.taxi-app-icon{font-size:24px}
+.taxi-app-name{font-family:'Syne',sans-serif;font-size:12px;font-weight:700}
+.taxi-app-price{font-size:10px;color:var(--gray)}
+.taxi-close{width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:11px;padding:11px;color:var(--gray);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer}
+
+/* DETAIL MODAL */
+.detail-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(6px);z-index:400;align-items:flex-end;justify-content:center;padding:0}
+.detail-overlay.show{display:flex}
+.detail-modal{background:#162f5a;border:1px solid rgba(255,107,0,0.25);border-radius:24px 24px 0 0;padding:24px 20px 32px;width:100%;max-width:500px;animation:slideUp 0.4s cubic-bezier(0.16,1,0.3,1);max-height:88vh;overflow-y:auto}
+.d-handle{width:40px;height:4px;background:rgba(255,255,255,0.2);border-radius:2px;margin:0 auto 16px}
+.d-emoji{font-size:44px;text-align:center;margin-bottom:10px}
+.d-type{display:inline-block;background:rgba(255,107,0,0.15);border:1px solid rgba(255,107,0,0.3);color:var(--orange);font-size:10px;padding:2px 8px;border-radius:100px;margin-bottom:5px;text-transform:uppercase}
+.d-name{font-family:'Syne',sans-serif;font-size:19px;font-weight:800;margin-bottom:6px}
+.d-desc{color:var(--gray);font-size:13px;line-height:1.6;margin-bottom:12px}
+.d-info{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.d-ii{background:rgba(255,255,255,0.05);border-radius:10px;padding:10px 12px}
+.d-il{font-size:10px;color:var(--gray);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px}
+.d-iv{font-size:13px;font-weight:500}
+.d-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.d-btn{border-radius:10px;padding:11px;color:white;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;cursor:pointer;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:5px;border:none;transition:all 0.2s}
+.d-gmap{background:#1a73e8}.d-gmap:hover{background:#1558b0}
+.d-ymap{background:#FC3F1D}.d-ymap:hover{background:#d93518}
+.d-taxi{background:rgba(255,193,7,0.2);border:1px solid rgba(255,193,7,0.4);color:#FFC107}
+.d-taxi:hover{background:#FFC107;color:black}
+.d-book{background:rgba(0,100,200,0.2);border:1px solid rgba(0,100,200,0.4);color:#4A90D9}
+.d-book:hover{background:#4A90D9;color:white}
+.d-ai{width:100%;background:rgba(255,107,0,0.15);border:1px solid rgba(255,107,0,0.4);border-radius:10px;padding:11px;color:white;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;margin-top:8px}
+
+/* CITY INTRO */
+.city-intro{position:fixed;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none}
+.city-intro.active{pointer-events:all}
+.ci-bg{position:absolute;inset:0;opacity:0;transition:opacity 0.4s}
+.ci-particles{position:absolute;inset:0;overflow:hidden}
+.ci-ripple{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:80px;height:80px;border-radius:50%;border:2px solid;opacity:0}
+.ci-line{position:absolute;height:1px;left:0;right:0;opacity:0}
+.ci-line-top{top:38%}.ci-line-bottom{bottom:38%}
+.ci-card{position:relative;text-align:center;transform:scale(0.3) translateY(60px);opacity:0;padding:0 20px}
+.ci-flag{font-size:80px;display:block;margin-bottom:14px;transform:scale(0) rotate(-20deg);opacity:0}
+.ci-name{font-family:'Syne',sans-serif;font-size:clamp(40px,10vw,80px);font-weight:800;letter-spacing:-3px;line-height:1;margin-bottom:8px;overflow:hidden}
+.ci-name-inner{display:block;transform:translateY(100%)}
+.ci-tagline{font-size:12px;color:rgba(255,255,255,0.6);letter-spacing:3px;text-transform:uppercase;opacity:0;transform:translateY(14px)}
+.ci-skip{position:absolute;bottom:32px;right:24px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:100px;padding:6px 16px;color:rgba(255,255,255,0.6);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;opacity:0}
+
+/* POPULAR SECTION */
+.popular-section{padding:16px 20px 80px}
+.pop-title{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;margin-bottom:14px}
+.pop-title span{color:var(--orange)}
+.pop-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media(min-width:600px){.pop-grid{grid-template-columns:repeat(5,1fr)}}
+.pop-card{background:var(--card);border:1px solid rgba(255,255,255,0.07);border-radius:13px;padding:14px 10px;text-align:center;cursor:pointer;transition:all 0.25s}
+.pop-card:hover{transform:translateY(-3px);border-color:rgba(255,107,0,0.3)}
+.pop-flag{font-size:26px;margin-bottom:5px}
+.pop-name{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;margin-bottom:2px}
+.pop-count{font-size:10px;color:var(--gray)}
+
+/* SHARE TOAST */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(0,255,136,0.9);color:#000;border-radius:100px;padding:8px 20px;font-size:13px;font-weight:600;opacity:0;transition:all 0.3s;z-index:600;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media(min-width:768px){
+  .vscreen{height:460px}
+  .places-grid{grid-template-columns:repeat(3,1fr)}
+  .city-banner{height:320px}
+}
+
+/* ===== BANNER WIDGETS: HAVA + VALYUTA ===== */
+.banner-widgets{position:absolute;top:14px;right:14px;z-index:4;display:flex;flex-direction:column;gap:8px;align-items:flex-end}
+.bw-weather,.bw-currency{background:rgba(0,0,0,0.55);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.15);border-radius:12px;padding:8px 12px;min-width:110px;text-align:right}
+.bw-loading{font-size:12px;color:var(--gray);text-align:center;padding:2px 0}
+.bw-temp{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;line-height:1;margin-bottom:2px}
+.bw-desc{font-size:10px;color:rgba(255,255,255,0.7);margin-bottom:2px}
+.bw-feels{font-size:10px;color:var(--gray)}
+.bw-cur-from{font-size:11px;color:var(--gray);margin-bottom:2px}
+.bw-cur-rate{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:#FFD700;margin-bottom:1px}
+.bw-cur-label{font-size:10px;color:rgba(255,255,255,0.6)}
+.bw-cur-multi{font-size:10px;color:rgba(255,255,255,0.5);margin-top:2px}
+
+/* ===== GOOGLE MAPS ===== */
+.maps-wrap{display:none;padding:0 0 20px}
+.maps-wrap.active{display:block}
+.maps-controls{padding:0 20px 12px}
+.maps-search-row{display:flex;gap:8px;margin-bottom:10px}
+.maps-inp{flex:1;background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.12);border-radius:12px;padding:11px 14px;font-size:13px;color:var(--white);font-family:'DM Sans',sans-serif;outline:none}
+.maps-inp:focus{border-color:var(--orange)}
+.maps-btn{background:var(--orange);border:none;border-radius:10px;padding:10px 14px;color:white;font-size:15px;cursor:pointer;flex-shrink:0}
+.maps-chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
+.maps-chips::-webkit-scrollbar{display:none}
+.map-chip{flex-shrink:0;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:100px;padding:6px 13px;font-size:11px;color:var(--gray);cursor:pointer;white-space:nowrap;font-family:'DM Sans',sans-serif}
+.map-chip:hover,.map-chip.active{background:rgba(255,107,0,0.2);border-color:var(--orange);color:var(--orange)}
+.maps-frame-wrap{position:relative;width:100%;height:420px;background:#0a1520}
+.maps-frame{width:100%;height:100%;border:none}
+.maps-actions{display:flex;gap:10px;padding:12px 20px 0}
+.maps-action-btn{flex:1;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:12px;color:white;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px;transition:all 0.2s}
+.maps-action-btn:hover{background:rgba(255,107,0,0.2);border-color:var(--orange)}
+.maps-nav-btn{background:rgba(0,212,180,0.1);border-color:rgba(0,212,180,0.3);color:#00D4C0}
+.maps-nav-btn:hover{background:rgba(0,212,180,0.25)}
+
+/* ===== REAL HOTEL SEARCH ===== */
+.hotel-search-wrap{padding:0 20px 20px}
+.hs-header{margin-bottom:14px}
+.hs-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:800}
+.hs-title span{color:var(--orange)}
+.hs-search-box{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:16px;margin-bottom:14px}
+
+/* ===== AFFILIATE BANNER ===== */
+.affiliate-banner{background:linear-gradient(135deg,#001a30,#002a50);border:1px solid rgba(0,212,180,0.3);border-radius:16px;padding:16px;display:flex;align-items:center;gap:12px;margin-top:14px}
+.aff-icon{font-size:32px;flex-shrink:0}
+.aff-text{flex:1}
+.aff-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin-bottom:3px;color:#FFD700}
+.aff-desc{font-size:11px;color:rgba(255,255,255,0.6);line-height:1.4}
+.aff-btn{background:var(--orange);border:none;border-radius:10px;padding:9px 14px;color:white;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;text-decoration:none;white-space:nowrap;flex-shrink:0}
+
+/* pcard-a maps düyməsi */
+.pcard-maps{background:rgba(26,115,232,0.15);border:1px solid rgba(26,115,232,0.3);border-radius:100px;padding:5px 10px;font-size:10px;color:#4A90D9;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:3px;transition:all 0.2s;margin-top:6px}
+.pcard-maps:hover{background:#1a73e8;color:white}
+.car-wrap{display:none;padding:0 20px 20px}
+.car-wrap.active{display:block}
+.car-hero{background:linear-gradient(135deg,#0a1520,#162f5a);border:1px solid rgba(255,107,0,0.2);border-radius:18px;padding:20px;margin-bottom:16px;text-align:center}
+.car-hero-icon{font-size:48px;margin-bottom:10px}
+.car-hero-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;margin-bottom:6px}
+.car-hero-title span{color:var(--orange)}
+.car-hero-desc{font-size:12px;color:var(--gray);line-height:1.6}
+.car-search-box{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:16px;margin-bottom:16px}
+.car-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.car-inp-wrap .fl-label{font-size:10px;color:var(--gray);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px}
+.car-inp{width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--white);font-family:'DM Sans',sans-serif;outline:none}
+.car-inp:focus{border-color:var(--orange)}
+.car-search-btn{width:100%;background:linear-gradient(135deg,var(--orange),#FF4400);border:none;border-radius:12px;padding:13px;color:white;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:0}
+.car-platforms{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.car-platform{border-radius:14px;padding:14px;text-decoration:none;display:flex;align-items:center;gap:10px;border:1px solid transparent;transition:all 0.2s}
+.car-platform:hover{transform:translateY(-2px)}
+.car-rentalcars{background:rgba(0,145,255,0.12);border-color:rgba(0,145,255,0.3)}
+.car-kayak{background:rgba(255,107,0,0.12);border-color:rgba(255,107,0,0.3)}
+.car-discovercars{background:rgba(0,200,100,0.12);border-color:rgba(0,200,100,0.3)}
+.car-localrent{background:rgba(255,193,7,0.1);border-color:rgba(255,193,7,0.25)}
+.car-platform-icon{font-size:22px}
+.car-platform-name{font-family:'Syne',sans-serif;font-size:12px;font-weight:700}
+.car-platform-desc{font-size:10px;color:var(--gray)}
+.car-tips{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:16px;margin-bottom:16px}
+.car-tips-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin-bottom:12px}
+.car-tip{display:flex;gap:10px;font-size:12px;color:rgba(255,255,255,0.8);margin-bottom:8px;align-items:flex-start;line-height:1.4}
+.car-tip:last-child{margin-bottom:0}
+.car-tip-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+.car-ai-box{background:rgba(255,107,0,0.06);border:1px solid rgba(255,107,0,0.2);border-radius:14px;padding:14px}
+.car-ai-result{font-size:12px;color:rgba(255,255,255,0.8);line-height:1.6;margin-top:10px;display:none}
+.car-ai-result.show{display:block}
+.car-type-chips{display:flex;gap:8px;overflow-x:auto;margin-bottom:10px;padding-bottom:4px}
+.car-type-chips::-webkit-scrollbar{display:none}
+.car-chip{flex-shrink:0;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:100px;padding:5px 12px;font-size:11px;color:var(--gray);cursor:pointer;white-space:nowrap}
+.car-chip:hover,.car-chip.active{background:rgba(255,107,0,0.2);border-color:var(--orange);color:var(--orange)}
+
+/* ===== FLIGHT SEARCH ===== */
+.flight-wrap{display:none;padding:0 20px 20px}
+.flight-wrap.active{display:block}
+.flight-search-box{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:18px;padding:16px;margin-bottom:16px}
+.fl-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.fl-inp-wrap{position:relative}
+.fl-label{font-size:10px;color:var(--gray);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px}
+.fl-inp{width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--white);font-family:'DM Sans',sans-serif;outline:none}
+.fl-inp:focus{border-color:var(--orange)}
+.fl-inp::placeholder{color:rgba(255,255,255,0.3)}
+.fl-search-btn{width:100%;background:linear-gradient(135deg,var(--orange),#FF4400);border:none;border-radius:12px;padding:13px;color:white;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+.fl-platforms{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.fl-platform{border-radius:14px;padding:14px;text-decoration:none;display:flex;align-items:center;gap:10px;border:1px solid transparent;transition:all 0.2s;cursor:pointer}
+.fl-platform:hover{transform:translateY(-2px)}
+.fl-skyscanner{background:rgba(0,145,255,0.12);border-color:rgba(0,145,255,0.3)}
+.fl-kayak{background:rgba(255,107,0,0.12);border-color:rgba(255,107,0,0.3)}
+.fl-google{background:rgba(66,133,244,0.12);border-color:rgba(66,133,244,0.3)}
+.fl-wizzair{background:rgba(200,0,150,0.12);border-color:rgba(200,0,150,0.3)}
+.fl-icon{font-size:22px}
+.fl-name{font-family:'Syne',sans-serif;font-size:12px;font-weight:700}
+.fl-desc{font-size:10px;color:var(--gray)}
+.fl-ai-section{background:rgba(255,107,0,0.06);border:1px solid rgba(255,107,0,0.2);border-radius:14px;padding:14px}
+.fl-ai-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.fl-ai-result{font-size:12px;color:rgba(255,255,255,0.8);line-height:1.6;display:none}
+.fl-ai-result.show{display:block}
+.fl-ai-loading{font-size:12px;color:var(--gray);display:none}
+.fl-ai-loading.show{display:flex;align-items:center;gap:8px}
+.fl-ai-btn{background:var(--orange);border:none;border-radius:9px;padding:8px 16px;color:white;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;cursor:pointer;margin-top:10px;display:flex;align-items:center;gap:5px}
+.fl-chips{display:flex;gap:8px;overflow-x:auto;margin-bottom:12px;padding-bottom:4px}
+.fl-chips::-webkit-scrollbar{display:none}
+.fl-chip{flex-shrink:0;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:100px;padding:6px 13px;font-size:11px;color:var(--gray);cursor:pointer;white-space:nowrap}
+.fl-chip:hover,.fl-chip.active{background:rgba(255,107,0,0.2);border-color:var(--orange);color:var(--orange)}
+
+/* ===== ESIM SECTION ===== */
+.esim-wrap{display:none;padding:0 20px 20px}
+.esim-wrap.active{display:block}
+.esim-hero{background:linear-gradient(135deg,#001a30,#002a50);border:1px solid rgba(0,212,180,0.3);border-radius:18px;padding:20px;margin-bottom:16px;text-align:center}
+.esim-hero-icon{font-size:48px;margin-bottom:10px}
+.esim-hero-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;margin-bottom:6px}
+.esim-hero-title span{color:#00D4C0}
+.esim-hero-desc{font-size:12px;color:var(--gray);line-height:1.6;margin-bottom:14px}
+.esim-benefits{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.esim-benefit{background:rgba(0,212,180,0.08);border:1px solid rgba(0,212,180,0.15);border-radius:10px;padding:10px;text-align:center}
+.esim-benefit-icon{font-size:20px;margin-bottom:4px}
+.esim-benefit-text{font-size:11px;color:rgba(255,255,255,0.8);font-weight:500}
+.esim-providers{display:flex;flex-direction:column;gap:12px;margin-bottom:16px}
+.esim-card{background:var(--card);border:1px solid rgba(255,255,255,0.07);border-radius:16px;padding:16px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all 0.25s;text-decoration:none}
+.esim-card:hover{transform:translateY(-3px);border-color:rgba(0,212,180,0.4);box-shadow:0 8px 24px rgba(0,0,0,0.3)}
+.esim-logo{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.esim-airalo{background:linear-gradient(135deg,#FF4500,#FF6B00)}
+.esim-holafly{background:linear-gradient(135deg,#0070F3,#00A0FF)}
+.esim-maya{background:linear-gradient(135deg,#7B2FF7,#B44FFF)}
+.esim-yesim{background:linear-gradient(135deg,#00B074,#00D4A0)}
+.esim-info{flex:1}
+.esim-name{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:3px}
+.esim-tagline{font-size:11px;color:var(--gray);margin-bottom:6px}
+.esim-tags{display:flex;gap:5px;flex-wrap:wrap}
+.esim-tag{background:rgba(0,212,180,0.1);border:1px solid rgba(0,212,180,0.2);border-radius:100px;padding:2px 8px;font-size:10px;color:#00D4C0}
+.esim-price{font-size:13px;font-weight:700;color:var(--orange);flex-shrink:0}
+.esim-ai-box{background:rgba(255,107,0,0.06);border:1px solid rgba(255,107,0,0.2);border-radius:14px;padding:14px}
+.esim-ai-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.esim-country-chips{display:flex;gap:8px;overflow-x:auto;margin-bottom:10px;padding-bottom:4px}
+.esim-country-chips::-webkit-scrollbar{display:none}
+.esim-chip{flex-shrink:0;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:100px;padding:5px 12px;font-size:11px;color:var(--gray);cursor:pointer;white-space:nowrap}
+.esim-chip:hover,.esim-chip.active{background:rgba(0,212,180,0.15);border-color:#00D4C0;color:#00D4C0}
+.esim-ai-btn{background:var(--orange);border:none;border-radius:9px;padding:8px 16px;color:white;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:5px}
+.esim-result{font-size:12px;color:rgba(255,255,255,0.8);line-height:1.6;margin-top:10px;display:none}
+.esim-result.show{display:block}
+.esim-loading{font-size:12px;color:var(--gray);margin-top:10px;display:none}
+.esim-loading.show{display:flex;align-items:center;gap:8px}
+</style>
+</head>
+<body>
+
+<!-- API KEY SCREEN -->
+<div class="api-screen" id="apiScreen">
+  <div class="api-box">
+    <div class="api-logo">✈️</div>
+    <h2>Haraya <span>Getsən</span></h2>
+    <p>Pulsuz AI köməkçini aktivləşdirin — kredit kartı lazım deyil!</p>
+
+    <div class="free-badge" style="margin-bottom:16px">🆓 Tamamilə Pulsuz • Gündə 200 sorğu</div>
+
+    <div class="api-steps">
+      <div class="api-step"><span>1.</span><span><a href="https://openrouter.ai" target="_blank">openrouter.ai</a> → <strong>"Sign Up"</strong> (pulsuz)</span></div>
+      <div class="api-step"><span>2.</span><span><strong>"Keys"</strong> → <strong>"Create Key"</strong> düyməsinə bas</span></div>
+      <div class="api-step"><span>3.</span><span>sk-or-v1-... ilə başlayan açarı kopyala</span></div>
+      <div class="api-step"><span>4.</span><span>Aşağıda yapışdır → AI hazır! 🚀</span></div>
+    </div>
+
+    <div class="model-select-wrap">
+      <div class="model-label">🤖 AI Model seç</div>
+      <select class="model-select" id="modelSelect">
+        <option value="meta-llama/llama-3.3-70b-instruct:free">🦙 Llama 3.3 70B — Ən yaxşı pulsuz</option>
+        <option value="google/gemma-3-27b-it:free">🔵 Google Gemma 3 27B</option>
+        <option value="deepseek/deepseek-r1:free">🧠 DeepSeek R1 — Güclü</option>
+        <option value="mistralai/mistral-7b-instruct:free">⚡ Mistral 7B — Sürətli</option>
+        <option value="qwen/qwq-32b:free">🌟 Qwen 32B</option>
+        <option value="nvidia/llama-3.1-nemotron-ultra-253b-v1:free">🚀 NVIDIA Nemotron 253B</option>
+      </select>
+    </div>
+
+    <div class="api-err" id="apiErrOR">❌ Yanlış açar. sk-or-v1- ilə başlamalıdır.</div>
+    <div class="api-input-wrap">
+      <input type="password" class="api-key-inp" id="orKeyInp" placeholder="sk-or-v1-..."/>
+      <button class="api-eye" onclick="toggleEye('orKeyInp')">👁️</button>
+    </div>
+    <button class="api-submit" onclick="saveORKey()">🚀 Pulsuz başla!</button>
+    <p class="api-note">🔒 Açar yalnız bu cihazda saxlanır • <a href="https://openrouter.ai/models?q=free" target="_blank">Bütün pulsuz modellər →</a></p>
+    <button class="api-skip" onclick="skipAPI()">Sonra quraşdırım</button>
+  </div>
+</div>
+
+<!-- CITY INTRO -->
+<div class="city-intro" id="cityIntro">
+  <div class="ci-bg" id="ciBg"></div>
+  <div class="ci-particles" id="ciParticles"></div>
+  <div class="ci-ripple" id="ciR1"></div><div class="ci-ripple" id="ciR2"></div><div class="ci-ripple" id="ciR3"></div>
+  <div class="ci-line ci-line-top" id="ciLT"></div><div class="ci-line ci-line-bottom" id="ciLB"></div>
+  <div class="ci-card" id="ciCard">
+    <span class="ci-flag" id="ciFlag"></span>
+    <div class="ci-name"><span class="ci-name-inner" id="ciName"></span></div>
+    <div class="ci-tagline" id="ciTag"></div>
+  </div>
+  <button class="ci-skip" id="ciSkip" onclick="skipIntro()">Keç →</button>
+</div>
+
+<!-- TAXI MODAL -->
+<div class="taxi-overlay" id="taxiOverlay" onclick="if(event.target===this)this.classList.remove('show')">
+  <div class="taxi-modal">
+    <div class="taxi-handle"></div>
+    <div class="taxi-title">🚕 Taksi sifariş et</div>
+    <div class="taxi-dest"><span style="font-size:20px" id="taxiIcon"></span><div><div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700" id="taxiName"></div><div style="font-size:11px;color:var(--gray)" id="taxiLoc"></div></div></div>
+    <div class="taxi-apps">
+      <a class="taxi-app taxi-uber" id="uberLink" href="#" target="_blank"><div class="taxi-app-icon">⚫</div><div class="taxi-app-name">Uber</div><div class="taxi-app-price">~12–18 AED</div></a>
+      <a class="taxi-app taxi-careem" href="https://www.careem.com/" target="_blank"><div class="taxi-app-icon">🟢</div><div class="taxi-app-name">Careem</div><div class="taxi-app-price">~10–16 AED</div></a>
+      <a class="taxi-app taxi-bolt" href="https://bolt.eu/" target="_blank"><div class="taxi-app-icon">⚡</div><div class="taxi-app-name">Bolt</div><div class="taxi-app-price">~9–14 AED</div></a>
+      <a class="taxi-app taxi-yandex" href="https://go.yandex/" target="_blank"><div class="taxi-app-icon">🟡</div><div class="taxi-app-name">Yandex Go</div><div class="taxi-app-price">~11–17 AED</div></a>
+    </div>
+    <button class="taxi-close" onclick="document.getElementById('taxiOverlay').classList.remove('show')">Bağla</button>
+  </div>
+</div>
+
+<!-- DETAIL MODAL -->
+<div class="detail-overlay" id="detailOverlay" onclick="if(event.target===this)this.classList.remove('show')">
+  <div class="detail-modal">
+    <div class="d-handle"></div>
+    <div class="d-emoji" id="dEmoji"></div>
+    <div class="d-type" id="dType"></div>
+    <div class="d-name" id="dName"></div>
+    <div class="d-desc" id="dDesc"></div>
+    <div class="d-info">
+      <div class="d-ii"><div class="d-il">Qiymət</div><div class="d-iv" id="dPrice"></div></div>
+      <div class="d-ii"><div class="d-il">Reytinq</div><div class="d-iv" id="dRating"></div></div>
+      <div class="d-ii"><div class="d-il">Ünvan</div><div class="d-iv" id="dLoc"></div></div>
+      <div class="d-ii"><div class="d-il">İş saatları</div><div class="d-iv" id="dHours"></div></div>
+    </div>
+    <div class="d-btns">
+      <a class="d-btn d-gmap" id="dGmap" href="#" target="_blank">🗺️ Google Maps</a>
+      <a class="d-btn d-ymap" id="dYmap" href="#" target="_blank">🗺️ Yandex Maps</a>
+      <button class="d-btn d-taxi" onclick="openTaxiFromDetail()">🚕 Taksi</button>
+      <a class="d-btn d-book" id="dBook" href="#" target="_blank">🏨 Booking</a>
+    </div>
+    <button class="d-ai" onclick="askAIAbout()">🤖 Claude-dan ətraflı soruş</button>
+  </div>
+</div>
+
+<!-- AI DRAWER -->
+<div class="ai-drawer" id="aiDrawer">
+  <div class="ai-handle"></div>
+  <div class="ai-dhead">
+    <div class="ai-dname">🤖 <span id="aiProviderName">AI</span> <span style="font-size:11px;color:var(--gray);font-weight:400;font-family:'DM Sans',sans-serif" id="aiProviderTag">— Səyahət köməkçisi</span></div>
+    <button class="ai-close-btn" onclick="toggleAI()">✕</button>
+  </div>
+  <div class="ai-msgs" id="aiMsgs">
+    <div class="msg msg-ai">Salam! Mən AI köməkçinizəm 🌍<br><br>Hər hansı şəhər, tur planı, restoran, otel haqqında soruşun!</div>
+  </div>
+  <div class="ai-quick" id="aiQuick">
+    <button class="aiq" onclick="qAsk('Dubai-da 3 günlük tur planı hazırla')">🗓️ 3 günlük tur</button>
+    <button class="aiq" onclick="qAsk('Ən ucuz uçuşları necə tapım?')">✈️ Ucuz uçuş</button>
+    <button class="aiq" onclick="qAsk('Ailə üçün ən yaxşı şəhər?')">👨‍👩‍👧 Ailə turu</button>
+    <button class="aiq" onclick="qAsk('Viza tələbləri nədir?')">📋 Viza</button>
+    <button class="aiq" onclick="qAsk('Büdcə turu üçün məsləhət ver')">💰 Büdcə turu</button>
+  </div>
+  <div class="ai-inp-row">
+    <textarea class="ai-inp" id="aiInp" placeholder="Sual yazın... (Enter göndərir)" rows="1" onkeydown="aiKey(event)" oninput="resizeInp(this)"></textarea>
+    <button class="ai-send-btn" id="aiSendBtn" onclick="sendAI()">➤</button>
+  </div>
+</div>
+
+<!-- AI FAB -->
+<button class="ai-fab" onclick="toggleAI()" id="aiFab">
+  🤖
+  <div class="notif" id="aiBadge" style="display:none">1</div>
+</button>
+
+<!-- SHARE TOAST -->
+<div class="toast" id="shareToast">✅ Link kopyalandı!</div>
+
+<header>
+  <a class="logo" onclick="goHome()">
+    <div class="logo-icon">✈️</div>
+    <div class="logo-text">Haraya <span>Getsən</span></div>
+  </a>
+  <div class="header-right">
+    <div class="ai-badge"><div class="ai-dot"></div><span id="aiBadgeText">OpenRouter</span></div>
+    <button class="key-btn" onclick="changeKey()">🔑</button>
+  </div>
+</header>
+
+<div class="main" id="mainContent">
+
+  <!-- NEARBY -->
+  <div class="nearby-section" id="nearbySection">
+    <div class="nearby-header">
+      <div class="nearby-title">Yaxınlığınızda <span>turistik yerlər</span></div>
+      <div class="loc-badge" id="locBadge">📍 Aşkarlanır...</div>
+    </div>
+    <div class="nearby-scroll" id="nearbyScroll">
+      <div style="color:var(--gray);font-size:13px;padding:20px">GPS icazəsi gözlənilir...</div>
+    </div>
+  </div>
+
+  <!-- SEARCH -->
+  <div class="search-section">
+    <div class="search-wrap">
+      <span class="s-icon">🔍</span>
+      <input type="text" class="search-box" id="searchInput" placeholder="Şəhər axtar... Dubai, Paris, Kahire..."/>
+      <button class="s-btn" onclick="doSearch()">Axtar</button>
+    </div>
+  </div>
+  <div class="tags" id="cityTags">
+    <span class="tag" onclick="searchCity('Dubai')">🇦🇪 Dubai</span>
+    <span class="tag" onclick="searchCity('Istanbul')">🇹🇷 İstanbul</span>
+    <span class="tag" onclick="searchCity('Kahire')">🇪🇬 Kahire</span>
+    <span class="tag" onclick="searchCity('Paris')">🇫🇷 Paris</span>
+    <span class="tag" onclick="searchCity('Tokyo')">🇯🇵 Tokyo</span>
+    <span class="tag" onclick="searchCity('Baku')">🇦🇿 Bakı</span>
+    <span class="tag" onclick="searchCity('Bali')">🇮🇩 Bali</span>
+    <span class="tag" onclick="searchCity('Rome')">🇮🇹 Roma</span>
+    <span class="tag" onclick="searchCity('Barcelona')">🇪🇸 Barselona</span>
+    <span class="tag" onclick="searchCity('New York')">🇺🇸 New York</span>
+    <span class="tag" onclick="searchCity('Maldives')">🇲🇻 Maldiv</span>
+    <span class="tag" onclick="searchCity('Luxor')">🇪🇬 Lüksör</span>
+  </div>
+
+  <!-- CITY PAGE -->
+  <div class="city-page" id="cityPage">
+    <!-- Banner -->
+    <div class="city-banner" id="cityBanner">
+      <div class="banner-css" id="bannerCSS"></div>
+      <div class="banner-overlay"></div>
+      <div class="banner-content">
+        <span class="banner-flag" id="bannerFlag"></span>
+        <div class="banner-title" id="bannerTitle"></div>
+        <div class="banner-sub" id="bannerSub"></div>
+      </div>
+      <!-- Hava + Valyuta widget -->
+      <div class="banner-widgets">
+        <div class="bw-weather" id="bwWeather"><div class="bw-loading">⏳</div></div>
+        <div class="bw-currency" id="bwCurrency"><div class="bw-loading">💱</div></div>
+      </div>
+      <div class="banner-dots" id="bannerDots"></div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="city-tabs">
+      <button class="ctab active" onclick="switchCityTab('video',this)">🎥 Videolar</button>
+      <button class="ctab" onclick="switchCityTab('tourist',this)">🏛️ Turistik</button>
+      <button class="ctab" onclick="switchCityTab('restaurant',this)">🍽️ Restoranlar</button>
+      <button class="ctab" onclick="switchCityTab('shopping',this)">🛍️ Alışveriş</button>
+      <button class="ctab" onclick="switchCityTab('hotel',this)">🏨 Otellər</button>
+      <button class="ctab" onclick="switchCityTab('maps',this)">🗺️ Xəritə</button>
+      <button class="ctab" onclick="switchCityTab('tour',this)">🗓️ AI Tur</button>
+      <button class="ctab" onclick="switchCityTab('flight',this)">✈️ Bilet</button>
+      <button class="ctab" onclick="switchCityTab('car',this)">🚗 Rent Car</button>
+      <button class="ctab" onclick="switchCityTab('esim',this)">📱 eSIM</button>
+    </div>
+
+    <!-- Video feed -->
+    <div class="video-feed active" id="tabVideo"></div>
+
+    <!-- Places -->
+    <div class="places-wrap" id="tabPlaces"></div>
+
+    <!-- GOOGLE MAPS TAB -->
+    <div class="maps-wrap" id="tabMaps">
+      <div class="maps-controls">
+        <div class="maps-search-row">
+          <input type="text" class="maps-inp" id="mapsSearch" placeholder="Yer axtar... Burj Khalifa, restoranlar..."/>
+          <button class="maps-btn" onclick="searchOnMap()">🔍</button>
+        </div>
+        <div class="maps-chips" id="mapsChips">
+          <button class="map-chip active" onclick="filterMap('tourist',this)">🏛️ Turistik</button>
+          <button class="map-chip" onclick="filterMap('restaurant',this)">🍽️ Restoranlar</button>
+          <button class="map-chip" onclick="filterMap('hotel',this)">🏨 Otellər</button>
+          <button class="map-chip" onclick="filterMap('shopping',this)">🛍️ Mağazalar</button>
+          <button class="map-chip" onclick="filterMap('cafe',this)">☕ Kafelər</button>
+          <button class="map-chip" onclick="filterMap('hospital',this)">🏥 Xəstəxana</button>
+          <button class="map-chip" onclick="filterMap('atm',this)">🏧 ATM</button>
+        </div>
+      </div>
+      <div class="maps-frame-wrap">
+        <iframe id="mapsFrame" class="maps-frame" src="" frameborder="0" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+      <div class="maps-actions">
+        <a class="maps-action-btn" id="mapsOpenBtn" href="#" target="_blank">🗺️ Google Maps-də aç</a>
+        <a class="maps-action-btn maps-nav-btn" id="mapsNavBtn" href="#" target="_blank">🧭 Naviqasiya</a>
+      </div>
+    </div>
+
+    <!-- REAL HOTEL SEARCH -->
+    <div class="hotel-search-wrap" id="tabHotelSearch" style="display:none">
+      <div class="hs-header">
+        <div class="hs-title">🏨 Real <span>Otel Axtarışı</span></div>
+      </div>
+      <div class="hs-search-box">
+        <div class="fl-row">
+          <div>
+            <div class="fl-label">Şəhər</div>
+            <input type="text" class="fl-inp" id="hsCity" placeholder="Dubai"/>
+          </div>
+          <div>
+            <div class="fl-label">Otaq tipi</div>
+            <select class="fl-inp" id="hsRoom" style="cursor:pointer">
+              <option>Standard</option>
+              <option>Deluxe</option>
+              <option>Suite</option>
+              <option>Villa</option>
+            </select>
+          </div>
+        </div>
+        <div class="fl-row">
+          <div>
+            <div class="fl-label">Giriş</div>
+            <input type="date" class="fl-inp" id="hsCheckin"/>
+          </div>
+          <div>
+            <div class="fl-label">Çıxış</div>
+            <input type="date" class="fl-inp" id="hsCheckout"/>
+          </div>
+        </div>
+        <div class="fl-row">
+          <div>
+            <div class="fl-label">Qonaqlar</div>
+            <select class="fl-inp" id="hsGuests" style="cursor:pointer">
+              <option value="1">1 Nəfər</option>
+              <option value="2" selected>2 Nəfər</option>
+              <option value="3">3 Nəfər</option>
+              <option value="4">4 Nəfər</option>
+            </select>
+          </div>
+          <div>
+            <div class="fl-label">Büdcə ($/gecə)</div>
+            <select class="fl-inp" id="hsBudget" style="cursor:pointer">
+              <option value="50">$0–50 (Ucuz)</option>
+              <option value="150" selected>$50–150 (Orta)</option>
+              <option value="300">$150–300 (Premium)</option>
+              <option value="999">$300+ (Lüks)</option>
+            </select>
+          </div>
+        </div>
+        <button class="fl-search-btn" style="width:100%;margin-top:4px" onclick="searchHotels()">🤖 AI ilə ən yaxşı otel tap</button>
+      </div>
+      <!-- AI otel nəticəsi -->
+      <div class="fl-ai-section" style="margin-bottom:14px">
+        <div class="fl-ai-title">🏨 AI Otel Tövsiyəsi</div>
+        <div class="fl-ai-loading" id="hsLoading"><div class="tplane">🏨</div> AI otellər axtarır...</div>
+        <div class="fl-ai-result" id="hsResult"></div>
+      </div>
+      <!-- Booking platformalar -->
+      <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:10px">🌐 Booking Platformaları</div>
+      <div class="fl-platforms">
+        <a class="fl-platform" id="hsBooking" href="#" target="_blank" style="background:rgba(0,100,200,0.15);border-color:rgba(0,100,200,0.3)">
+          <div class="fl-icon">🔵</div>
+          <div><div class="fl-name">Booking.com</div><div class="fl-desc">Ən böyük seçim</div></div>
+        </a>
+        <a class="fl-platform" id="hsHotels" href="#" target="_blank" style="background:rgba(255,80,0,0.15);border-color:rgba(255,80,0,0.3)">
+          <div class="fl-icon">🏨</div>
+          <div><div class="fl-name">Hotels.com</div><div class="fl-desc">10 gecə, 1 pulsuz</div></div>
+        </a>
+        <a class="fl-platform" id="hsAgoda" href="#" target="_blank" style="background:rgba(180,0,80,0.15);border-color:rgba(180,0,80,0.3)">
+          <div class="fl-icon">🌸</div>
+          <div><div class="fl-name">Agoda</div><div class="fl-desc">Asiya üçün ən yaxşı</div></div>
+        </a>
+        <a class="fl-platform" id="hsAirbnb" href="#" target="_blank" style="background:rgba(255,90,70,0.12);border-color:rgba(255,90,70,0.3)">
+          <div class="fl-icon">🏠</div>
+          <div><div class="fl-name">Airbnb</div><div class="fl-desc">Ev kirayəsi</div></div>
+        </a>
+      </div>
+      <!-- Affiliate banner -->
+      <div class="affiliate-banner">
+        <div class="aff-icon">💰</div>
+        <div class="aff-text">
+          <div class="aff-title">Booking Affiliate ilə Qazanın!</div>
+          <div class="aff-desc">Bu tətbiqdən Booking.com-a keçib otel sifariş edən hər kəsdən komissiya qazanırsız</div>
+        </div>
+        <a class="aff-btn" href="https://www.booking.com/affiliate-program/v1/tools/getapp.html" target="_blank">Qoşul →</a>
+      </div>
+    </div>
+
+    <!-- FLIGHT SEARCH -->
+    <div class="flight-wrap" id="tabFlight">
+      <div class="flight-search-box">
+        <div class="fl-row">
+          <div>
+            <div class="fl-label">Haradan</div>
+            <input type="text" class="fl-inp" id="flFrom" placeholder="Bakı (GYD)" value="Bakı (GYD)"/>
+          </div>
+          <div>
+            <div class="fl-label">Haraya</div>
+            <input type="text" class="fl-inp" id="flTo" placeholder="Dubai (DXB)"/>
+          </div>
+        </div>
+        <div class="fl-row">
+          <div>
+            <div class="fl-label">Gedən</div>
+            <input type="date" class="fl-inp" id="flDate"/>
+          </div>
+          <div>
+            <div class="fl-label">Sifariş</div>
+            <select class="fl-inp" id="flClass" style="cursor:pointer">
+              <option>Economy</option>
+              <option>Business</option>
+              <option>First Class</option>
+            </select>
+          </div>
+        </div>
+        <button class="fl-search-btn" onclick="searchFlights()">🤖 Claude ilə ucuz bilet tap</button>
+      </div>
+
+      <!-- AI Flight Result -->
+      <div class="fl-ai-section" id="flAiSection">
+        <div class="fl-ai-title">🤖 Claude AI — Bilet Analizi</div>
+        <div class="fl-ai-loading" id="flLoading"><div class="tplane">✈️</div> Claude biletlər axtarır...</div>
+        <div class="fl-ai-result" id="flResult"></div>
+        <button class="fl-ai-btn" onclick="searchFlights()" style="display:none" id="flRetry">🔄 Yenidən axtar</button>
+      </div>
+
+      <!-- Populyar destinasiyalar -->
+      <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin:16px 0 10px">🔥 Populyar istiqamətlər</div>
+      <div class="fl-chips" id="flChips"></div>
+
+      <!-- Bilet platformaları -->
+      <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:10px">🎫 Bilet platformaları</div>
+      <div class="fl-platforms">
+        <a class="fl-platform fl-skyscanner" id="fl-sky" href="#" target="_blank">
+          <div class="fl-icon">🔵</div>
+          <div><div class="fl-name">Skyscanner</div><div class="fl-desc">Ən ucuz bilet</div></div>
+        </a>
+        <a class="fl-platform fl-kayak" id="fl-kayak" href="#" target="_blank">
+          <div class="fl-icon">🧡</div>
+          <div><div class="fl-name">Kayak</div><div class="fl-desc">Qiymət alert</div></div>
+        </a>
+        <a class="fl-platform fl-google" id="fl-google" href="#" target="_blank">
+          <div class="fl-icon">✈️</div>
+          <div><div class="fl-name">Google Flights</div><div class="fl-desc">Qraf analizi</div></div>
+        </a>
+        <a class="fl-platform fl-wizzair" id="fl-wizz" href="#" target="_blank">
+          <div class="fl-icon">💜</div>
+          <div><div class="fl-name">Wizz Air</div><div class="fl-desc">Ucuz Avropa</div></div>
+        </a>
+      </div>
+      <a class="fl-platform" style="background:rgba(255,107,0,0.1);border-color:rgba(255,107,0,0.3);margin-bottom:8px;text-decoration:none;display:flex;align-items:center;gap:10px;border-radius:14px;padding:14px" id="fl-azal" href="#" target="_blank">
+        <div class="fl-icon">🇦🇿</div>
+        <div><div class="fl-name" style="font-family:'Syne',sans-serif;font-size:12px;font-weight:700">AZAL</div><div class="fl-desc" style="font-size:10px;color:var(--gray)">Azərbaycan Hava Yolları</div></div>
+      </a>
+      <a class="fl-platform" style="background:rgba(255,193,7,0.1);border-color:rgba(255,193,7,0.3);margin-bottom:16px;text-decoration:none;display:flex;align-items:center;gap:10px;border-radius:14px;padding:14px" href="https://www.flydubai.com" target="_blank">
+        <div class="fl-icon">🇦🇪</div>
+        <div><div class="fl-name" style="font-family:'Syne',sans-serif;font-size:12px;font-weight:700">FlyDubai</div><div class="fl-desc" style="font-size:10px;color:var(--gray)">Dubai birbaşa uçuşlar</div></div>
+      </a>
+    </div>
+
+    <!-- eSIM SECTION -->
+    <div class="esim-wrap" id="tabEsim">
+      <div class="esim-hero">
+        <div class="esim-hero-icon">📱</div>
+        <div class="esim-hero-title">Xarici ölkədə <span>eSIM</span></div>
+        <div class="esim-hero-desc">SIM kart axtarmadan birbaşa telefonunuza internet bağlayın. Ucuz, sürətli, rahat!</div>
+        <div class="esim-benefits">
+          <div class="esim-benefit"><div class="esim-benefit-icon">⚡</div><div class="esim-benefit-text">Dərhal aktivasiya</div></div>
+          <div class="esim-benefit"><div class="esim-benefit-icon">💰</div><div class="esim-benefit-text">Roaminqdən ucuz</div></div>
+          <div class="esim-benefit"><div class="esim-benefit-icon">🌍</div><div class="esim-benefit-text">190+ ölkə</div></div>
+          <div class="esim-benefit"><div class="esim-benefit-icon">📶</div><div class="esim-benefit-text">4G/5G sürəti</div></div>
+        </div>
+      </div>
+
+      <!-- AI eSIM Məsləhəti -->
+      <div class="esim-ai-box" style="margin-bottom:16px">
+        <div class="esim-ai-title">🤖 Claude — Hansı eSIM lazımdır?</div>
+        <div class="esim-country-chips" id="esimChips"></div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="esim-ai-btn" onclick="getEsimAdvice()">✨ eSIM məsləhəti al</button>
+        </div>
+        <div class="esim-loading" id="esimLoading"><div style="animation:spin 1s linear infinite;display:inline-block">⏳</div> Claude analiz edir...</div>
+        <div class="esim-result" id="esimResult"></div>
+      </div>
+
+      <!-- eSIM Provayderləri -->
+      <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:12px">📡 eSIM Provayderləri</div>
+      <div class="esim-providers">
+        <a class="esim-card" href="https://www.airalo.com" target="_blank">
+          <div class="esim-logo esim-airalo">📶</div>
+          <div class="esim-info">
+            <div class="esim-name">Airalo</div>
+            <div class="esim-tagline">Dünyanın #1 eSIM platforması</div>
+            <div class="esim-tags">
+              <span class="esim-tag">190+ ölkə</span>
+              <span class="esim-tag">App Store</span>
+              <span class="esim-tag">Google Play</span>
+            </div>
+          </div>
+          <div class="esim-price">$5-dən</div>
+        </a>
+        <a class="esim-card" href="https://holafly.com" target="_blank">
+          <div class="esim-logo esim-holafly">🌊</div>
+          <div class="esim-info">
+            <div class="esim-name">Holafly</div>
+            <div class="esim-tagline">Limitsiz data planları</div>
+            <div class="esim-tags">
+              <span class="esim-tag">Limitsiz</span>
+              <span class="esim-tag">160+ ölkə</span>
+            </div>
+          </div>
+          <div class="esim-price">$19-dan</div>
+        </a>
+        <a class="esim-card" href="https://maya.net" target="_blank">
+          <div class="esim-logo esim-maya">🔮</div>
+          <div class="esim-info">
+            <div class="esim-name">Maya Mobile</div>
+            <div class="esim-tagline">Azərbaycan üçün uyğun</div>
+            <div class="esim-tags">
+              <span class="esim-tag">AZN ödəniş</span>
+              <span class="esim-tag">Dəstək AZ</span>
+            </div>
+          </div>
+          <div class="esim-price">₼8-dən</div>
+        </a>
+        <a class="esim-card" href="https://yesim.app" target="_blank">
+          <div class="esim-logo esim-yesim">📡</div>
+          <div class="esim-info">
+            <div class="esim-name">Yesim</div>
+            <div class="esim-tagline">Ani aktivasiya, ucuz planlar</div>
+            <div class="esim-tags">
+              <span class="esim-tag">200+ ölkə</span>
+              <span class="esim-tag">24/7 dəstək</span>
+            </div>
+          </div>
+          <div class="esim-price">$3-dən</div>
+        </a>
+        <a class="esim-card" href="https://www.esim.com" target="_blank">
+          <div class="esim-logo" style="background:linear-gradient(135deg,#1a73e8,#4A90D9)">🌐</div>
+          <div class="esim-info">
+            <div class="esim-name">eSIM.com</div>
+            <div class="esim-tagline">Regional paketlər, çoxölkəli</div>
+            <div class="esim-tags">
+              <span class="esim-tag">Multi-country</span>
+              <span class="esim-tag">Avropa</span>
+            </div>
+          </div>
+          <div class="esim-price">$6-dan</div>
+        </a>
+      </div>
+
+      <!-- eSIM Necə işləyir -->
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:16px">
+        <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin-bottom:12px">📖 eSIM necə işləyir?</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;gap:10px;font-size:12px;color:rgba(255,255,255,0.8)"><div style="background:var(--orange);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0">1</div><div>Airalo/Holafly saytından plan seç → ödə</div></div>
+          <div style="display:flex;gap:10px;font-size:12px;color:rgba(255,255,255,0.8)"><div style="background:var(--orange);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0">2</div><div>QR kod gəlir → telefonun Ayarlar → Mobil → eSIM əlavə et</div></div>
+          <div style="display:flex;gap:10px;font-size:12px;color:rgba(255,255,255,0.8)"><div style="background:var(--orange);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0">3</div><div>Ölkəyə çatanda eSIM aktivləşir — internet hazırdır! 🎉</div></div>
+        </div>
+        <div style="margin-top:12px;background:rgba(0,212,180,0.08);border:1px solid rgba(0,212,180,0.2);border-radius:10px;padding:10px;font-size:11px;color:#00D4C0">
+          ⚠️ iPhone XS və sonrası, Android 2019+ cihazlar eSIM dəstəkləyir
+        </div>
+      </div>
+    </div>
+
+    <!-- RENT CAR -->
+    <div class="car-wrap" id="tabCar">
+      <div class="car-hero">
+        <div class="car-hero-icon">🚗</div>
+        <div class="car-hero-title">Rent <span>Car</span></div>
+        <div class="car-hero-desc">Şəhərdə azad gəzin — ən ucuz icarə avtomobili tapın!</div>
+      </div>
+
+      <!-- Axtarış -->
+      <div class="car-search-box">
+        <div class="car-row">
+          <div class="car-inp-wrap">
+            <div class="fl-label">Götürmə yeri</div>
+            <input type="text" class="car-inp" id="carCity" placeholder="Dubai, UAE"/>
+          </div>
+          <div class="car-inp-wrap">
+            <div class="fl-label">Avtomobil növü</div>
+            <select class="car-inp" id="carType" style="cursor:pointer">
+              <option>Economy</option>
+              <option>Compact</option>
+              <option>SUV</option>
+              <option>Luxury</option>
+              <option>Van</option>
+            </select>
+          </div>
+        </div>
+        <div class="car-row">
+          <div class="car-inp-wrap">
+            <div class="fl-label">Başlanğıc tarixi</div>
+            <input type="date" class="car-inp" id="carFrom"/>
+          </div>
+          <div class="car-inp-wrap">
+            <div class="fl-label">Bitmə tarixi</div>
+            <input type="date" class="car-inp" id="carTo"/>
+          </div>
+        </div>
+        <button class="car-search-btn" onclick="searchCar()">🤖 AI ilə ən ucuz maşın tap</button>
+      </div>
+
+      <!-- Avtomobil növü chips -->
+      <div class="car-type-chips" id="carChips">
+        <div class="car-chip active" onclick="selectCarType('Economy',this)">💼 Economy</div>
+        <div class="car-chip" onclick="selectCarType('Compact',this)">🚗 Compact</div>
+        <div class="car-chip" onclick="selectCarType('SUV',this)">🚙 SUV</div>
+        <div class="car-chip" onclick="selectCarType('Luxury',this)">💎 Luxury</div>
+        <div class="car-chip" onclick="selectCarType('Minivan',this)">🚐 Minivan</div>
+        <div class="car-chip" onclick="selectCarType('Electric',this)">⚡ Elektrik</div>
+        <div class="car-chip" onclick="selectCarType('Cabrio',this)">🌞 Kabrio</div>
+      </div>
+
+      <!-- AI nəticə -->
+      <div class="car-ai-box" style="margin-bottom:16px">
+        <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px">🤖 AI — Rent Car Məsləhəti</div>
+        <div class="esim-loading" id="carLoading"><div style="animation:spin 1s linear infinite;display:inline-block">⏳</div> AI analiz edir...</div>
+        <div class="car-ai-result" id="carResult"></div>
+        <button class="fl-ai-btn" onclick="searchCar()" style="margin-top:10px">🔄 Yenidən axtar</button>
+      </div>
+
+      <!-- Platformalar -->
+      <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:10px">🌐 Rent Car Platformaları</div>
+      <div class="car-platforms">
+        <a class="car-platform car-rentalcars" id="carRentalLink" href="https://www.rentalcars.com" target="_blank">
+          <div class="car-platform-icon">🔵</div>
+          <div><div class="car-platform-name">Rentalcars</div><div class="car-platform-desc">500+ şirkət, ən ucuz</div></div>
+        </a>
+        <a class="car-platform car-kayak" id="carKayakLink" href="https://www.kayak.com/cars" target="_blank">
+          <div class="car-platform-icon">🧡</div>
+          <div><div class="car-platform-name">Kayak Cars</div><div class="car-platform-desc">Qiymət müqayisəsi</div></div>
+        </a>
+        <a class="car-platform car-discovercars" id="carDiscoverLink" href="https://www.discovercars.com" target="_blank">
+          <div class="car-platform-icon">🟢</div>
+          <div><div class="car-platform-name">Discover Cars</div><div class="car-platform-desc">Pulsuz ləğvetmə</div></div>
+        </a>
+        <a class="car-platform car-localrent" id="carLocalLink" href="#" target="_blank">
+          <div class="car-platform-icon">📍</div>
+          <div><div class="car-platform-name">Lokal şirkətlər</div><div class="car-platform-desc">Yerli icarə</div></div>
+        </a>
+      </div>
+
+      <!-- Məsləhətlər -->
+      <div class="car-tips">
+        <div class="car-tips-title">💡 Rent Car Məsləhətləri</div>
+        <div class="car-tip"><div class="car-tip-icon">✅</div><div>Sürücülük vəsiqənizin beynəlxalq çevirisini (IDP) əvvəlcədən hazırlayın</div></div>
+        <div class="car-tip"><div class="car-tip-icon">💳</div><div>Kredit kartı məcburidir — depozit üçün bloklanır</div></div>
+        <div class="car-tip"><div class="car-tip-icon">📋</div><div>Tam sığorta paketini (CDW+TP) götürün — gündəlik $10-20 əlavə</div></div>
+        <div class="car-tip"><div class="car-tip-icon">⛽</div><div>Yüklü tankla götürüb yüklü qaytarın — boş qaytarma çox baha başa gəlir</div></div>
+        <div class="car-tip"><div class="car-tip-icon">📸</div><div>Avtomobili götürərkən bütün cızıqları foto çəkin</div></div>
+        <div class="car-tip"><div class="car-tip-icon">🗺️</div><div>GPS/navigasiya əvvəlcədən yükləyin — roaming bahalıdır</div></div>
+      </div>
+    </div>
+
+    <!-- AI Tour -->
+    <div class="tour-wrap" id="tabTour">
+      <div class="tour-header">🗓️ AI ilə <span>Tur Planı</span></div>
+      <div class="tour-days" id="tourDays">
+        <button class="tour-day-btn active" data-days="2" onclick="selectDays(2,this)">2 Gün</button>
+        <button class="tour-day-btn" data-days="3" onclick="selectDays(3,this)">3 Gün</button>
+        <button class="tour-day-btn" data-days="5" onclick="selectDays(5,this)">5 Gün</button>
+        <button class="tour-day-btn" data-days="7" onclick="selectDays(7,this)">1 Həftə</button>
+      </div>
+      <button class="tour-gen-btn" onclick="generateTour()">✨ Claude AI ilə Tur Planı Hazırla</button>
+      <div class="tour-loading" id="tourLoading">
+        <div class="tplane">✈️</div>
+        <div>Claude AI tur planı hazırlayır...</div>
+      </div>
+      <div class="tour-result" id="tourResult"></div>
+    </div>
+  </div>
+
+  <!-- POPULAR CITIES -->
+  <div class="popular-section" id="popularSection">
+    <div class="pop-title">Populyar <span>Şəhərlər</span></div>
+    <div class="pop-grid" id="popGrid"></div>
+  </div>
+
+</div>
+
+<script>
+// =====================
+// CITY DATA
+// =====================
+const TL={tourist:'🏛️ Turistik',restaurant:'🍽️ Restoran',shopping:'🛍️ Alışveriş',hotel:'🏨 Otel'};
+
+const CITIES={
+  dubai:{
+    flag:'🇦🇪',name:'DUBAI',tagline:'LUXURY • ADVENTURE • FUTURE',
+    color:'#FF6B00',bg:'#050f1e',
+    videos:[
+      {tag:'BURJ KHALIFA',title:'Burj Khalifa',desc:'Dünyanın ən hündür binası • 828m • Gecə işıqlanması',emoji:'🏙️',mp4:'20109',dur:'15s'},
+      {tag:'MARINA NIGHT',title:'Dubai Marina',desc:'Gecə həyatı • Yatlar • Işıqlı restoranlar',emoji:'⛵',mp4:'30971',dur:'8s'},
+      {tag:'PALM ISLAND',title:'Palm Jumeirah',desc:'Xurma formasında ada • Atlantis oteli',emoji:'🌴',mp4:'30985',dur:'13s'},
+      {tag:'CITY AERIAL',title:'Downtown Dubai',desc:'Havadan görünüş • İkonik binalar',emoji:'🚁',mp4:'20211',dur:'10s'},
+      {tag:'JBR BEACH',title:'Dubai Beach',desc:'Çimərliklər • Şəhər fonunda',emoji:'🏖️',mp4:'31005',dur:'9s'},
+      {tag:'NIGHT CITY',title:'Gecə Dubai',desc:'Gecə işıqları • Göy qurşağı binalar',emoji:'🌃',mp4:'20115',dur:'11s'},
+    ],
+    places:{
+      tourist:[
+        {name:'Burj Xəlifə',emoji:'🏙️',type:'tourist',desc:'Dünyanın ən hündür binası. 124-cü mərtəbə.',price:'150 AED',rating:'⭐ 4.9',location:'Downtown Dubai',hours:'09:00–22:00',mapQ:'Burj Khalifa Dubai',booking:''},
+        {name:'Palm Jumeirah',emoji:'🌴',type:'tourist',desc:'Xurma formasında süni ada.',price:'Pulsuz',rating:'⭐ 4.7',location:'Palm Jumeirah',hours:'24 saat',mapQ:'Palm Jumeirah Dubai',booking:''},
+        {name:'Səhra Safarisi',emoji:'🐪',type:'tourist',desc:'Qum, dəvə, Bədəvi düşərgəsi.',price:'250 AED',rating:'⭐ 4.8',location:'Dubai Outskirts',hours:'15:00–22:00',mapQ:'Desert Safari Dubai',booking:''},
+        {name:'Dubai Fəvvarəsi',emoji:'⛲',type:'tourist',desc:'Dünyanın ən böyük fəvvarəsi.',price:'Pulsuz',rating:'⭐ 4.8',location:'Downtown Dubai',hours:'18:00–23:00',mapQ:'Dubai Fountain',booking:''},
+      ],
+      restaurant:[
+        {name:'Nobu Dubai',emoji:'🍽️',type:'restaurant',desc:'Dünya şöhrətli Yapon-Peru mətbəxi.',price:'300+ AED',rating:'⭐ 4.8',location:'Atlantis Hotel',hours:'18:00–01:00',mapQ:'Nobu Dubai',booking:'https://www.noburestaurants.com'},
+        {name:'Arabian Tea House',emoji:'🍵',type:'restaurant',desc:'Klassik Ərəb mətbəxi, ənənəvi muhit.',price:'50–120 AED',rating:'⭐ 4.6',location:'Bur Dubai',hours:'07:00–23:00',mapQ:'Arabian Tea House Dubai',booking:''},
+        {name:'Nusr-Et Dubai',emoji:'🥩',type:'restaurant',desc:'Salt Bae rəstoranı. Premium ət şouu.',price:'500+ AED',rating:'⭐ 4.6',location:'Palm Jumeirah',hours:'13:00–01:00',mapQ:'Nusr-Et Dubai',booking:''},
+        {name:'Dhow Cruise',emoji:'🚢',type:'restaurant',desc:'Gəmidə şam yeməyi, Dubai Creek.',price:'180 AED',rating:'⭐ 4.7',location:'Dubai Creek',hours:'19:00–22:00',mapQ:'Dhow Cruise Dubai Creek',booking:''},
+      ],
+      shopping:[
+        {name:'Dubai Mall',emoji:'🛍️',type:'shopping',desc:'1200+ mağaza, akvaryum, buz.',price:'Pulsuz giriş',rating:'⭐ 4.8',location:'Downtown Dubai',hours:'10:00–00:00',mapQ:'Dubai Mall',booking:''},
+        {name:'Qızıl Souk',emoji:'💛',type:'shopping',desc:'350+ zərgər, 10 ton qızıl/gün.',price:'Müxtəlif',rating:'⭐ 4.5',location:'Deira',hours:'10:00–22:00',mapQ:'Gold Souk Dubai',booking:''},
+        {name:'Mall of Emirates',emoji:'⛷️',type:'shopping',desc:'Ski Dubai daxil. 560 mağaza.',price:'Pulsuz giriş',rating:'⭐ 4.7',location:'Al Barsha',hours:'10:00–00:00',mapQ:'Mall of the Emirates Dubai',booking:''},
+      ],
+      hotel:[
+        {name:'Burj Al Arab',emoji:'⛵',type:'hotel',desc:'7 ulduzlu yelkən formalı otel.',price:'5000+ AED/gecə',rating:'⭐ 5.0',location:'Jumeirah Beach',hours:'24 saat',mapQ:'Burj Al Arab Dubai',booking:'https://www.booking.com/hotel/ae/burj-al-arab.html'},
+        {name:'Atlantis The Palm',emoji:'🏨',type:'hotel',desc:'Palm Jumeirahda lüks otel.',price:'1200+ AED/gecə',rating:'⭐ 4.9',location:'Palm Jumeirah',hours:'24 saat',mapQ:'Atlantis The Palm Dubai',booking:'https://www.booking.com/hotel/ae/atlantis-the-palm.html'},
+        {name:'Armani Hotel',emoji:'👔',type:'hotel',desc:'Burj Khalifanın içindəki otel.',price:'2000+ AED/gecə',rating:'⭐ 4.9',location:'Downtown Dubai',hours:'24 saat',mapQ:'Armani Hotel Dubai',booking:'https://www.booking.com/hotel/ae/armani-dubai.html'},
+      ]
+    },
+    quickQ:['Dubai 3 günlük tur planı yaz','Ən ucuz otellər?','Visa lazımdırmı?','Büdcə neçə olmalı?']
+  },
+
+  kahire:{
+    flag:'🇪🇬',name:'KAHİRƏ',tagline:'QƏDIM MISIR • TARİX • ƏFSANƏ',
+    color:'#E8A020',bg:'#120800',
+    videos:[
+      {tag:'PİRAMİDLƏR',title:'Gizə Piramidləri',desc:'Dünyanın 7 möcüzəsindən biri • 4500 il',emoji:'🏺',layers:['#2a1500','#4a2500','#E8A020'],dur:'15s'},
+      {tag:'SFENKS',title:'Böyük Sfenks',desc:'Misirin simvolu • Qədim dünya',emoji:'🦁',layers:['#1a0a00','#3a1500','#FFD700'],dur:'12s'},
+      {tag:'NİL',title:'Nil Çayı',desc:'Dünyanın ən uzun çayı • Gəzinti',emoji:'🛶',layers:['#001a30','#002a50','#40A0FF'],dur:'13s'},
+      {tag:'MUZEY',title:'Misir Muzeyi',desc:'Tutankamon xəzinəsi • Mumiyalar',emoji:'🏛️',layers:['#0a0a1a','#151530','#E8A020'],dur:'11s'},
+      {tag:'BAZAR',title:'Xan əl-Xəlili',desc:'500 illik bazar • Ədviyyat, zərgərlik',emoji:'🕌',layers:['#1a0500','#2a0800','#FF6B00'],dur:'10s'},
+      {tag:'LÜKSÖR',title:'Lüksör Məbədləri',desc:'Qədim Teb • Fironlar şəhəri',emoji:'🏯',layers:['#1a1000','#2a1800','#FFD700'],dur:'14s'},
+    ],
+    places:{
+      tourist:[
+        {name:'Gizə Piramidləri',emoji:'🏺',type:'tourist',desc:'Dünyanın 7 möcüzəsi. 4500 il tarix.',price:'200 EGP',rating:'⭐ 5.0',location:'Gizə',hours:'08:00–17:00',mapQ:'Pyramids of Giza Egypt',booking:''},
+        {name:'Böyük Sfenks',emoji:'🦁',type:'tourist',desc:'Misirin simvolu. Piramidlər yanında.',price:'Gizə bileti',rating:'⭐ 4.9',location:'Gizə',hours:'08:00–17:00',mapQ:'Great Sphinx of Giza',booking:''},
+        {name:'Karnak Məbədi',emoji:'🏯',type:'tourist',desc:'Dünyanın ən böyük qədim məbəd kompleksi.',price:'180 EGP',rating:'⭐ 4.9',location:'Lüksör',hours:'06:00–17:30',mapQ:'Karnak Temple Luxor Egypt',booking:''},
+        {name:'Misir Muzeyi',emoji:'🏛️',type:'tourist',desc:'Tutankamon xəzinəsi. 120.000+ artefakt.',price:'200 EGP',rating:'⭐ 4.8',location:'Tahrir Meydanı',hours:'09:00–17:00',mapQ:'Egyptian Museum Cairo',booking:''},
+        {name:'Nil Gəzintisi',emoji:'🛶',type:'tourist',desc:'Faluka ilə gün batımı gəzintisi.',price:'50 EGP',rating:'⭐ 4.7',location:'Kahirə Nil',hours:'16:00–22:00',mapQ:'Nile cruise Cairo',booking:''},
+        {name:'Xan əl-Xəlili',emoji:'🕌',type:'tourist',desc:'500 illik bazar. Ədviyyat, zərgərlik, suvenir.',price:'Pulsuz giriş',rating:'⭐ 4.6',location:'İslam Kahirəsi',hours:'09:00–22:00',mapQ:'Khan el-Khalili Cairo',booking:''},
+      ],
+      restaurant:[
+        {name:'Koshary El Tahrir',emoji:'🍲',type:'restaurant',desc:'Misirin milli yeməyi Koshary. Ən məşhur yer.',price:'30–50 EGP',rating:'⭐ 4.7',location:'Tahrir Meydanı',hours:'08:00–00:00',mapQ:'Koshary El Tahrir Cairo',booking:''},
+        {name:'Abou El Sid',emoji:'🥘',type:'restaurant',desc:'Ənənəvi Misir mətbəxi. Tarixli atmosfer.',price:'200–400 EGP',rating:'⭐ 4.8',location:'Zamalek',hours:'13:00–01:00',mapQ:'Abou El Sid Cairo',booking:''},
+        {name:'Felfela',emoji:'🧆',type:'restaurant',desc:'Klassik Misir yeməkləri. Turist sevimli.',price:'100–250 EGP',rating:'⭐ 4.5',location:'Mərkəz Kahirə',hours:'08:00–00:00',mapQ:'Felfela Restaurant Cairo',booking:''},
+      ],
+      shopping:[
+        {name:'Xan əl-Xəlili',emoji:'🛒',type:'shopping',desc:'500 illik bazar. Ədviyyat, zərgərlik.',price:'Müxtəlif',rating:'⭐ 4.6',location:'İslam Kahirəsi',hours:'09:00–22:00',mapQ:'Khan el-Khalili Cairo',booking:''},
+        {name:'City Stars Mall',emoji:'🛍️',type:'shopping',desc:'Kahirənin ən böyük müasir malı.',price:'Pulsuz giriş',rating:'⭐ 4.5',location:'Nasr Şəhəri',hours:'10:00–00:00',mapQ:'City Stars Mall Cairo',booking:''},
+      ],
+      hotel:[
+        {name:'Mena House Hotel',emoji:'🏨',type:'hotel',desc:'Piramidlərə baxan tarixi otel.',price:'300+ USD/gecə',rating:'⭐ 4.9',location:'Gizə',hours:'24 saat',mapQ:'Mena House Hotel Cairo',booking:'https://www.booking.com/hotel/eg/marriott-mena-house-cairo.html'},
+        {name:'Sofitel Cairo Nile',emoji:'🌊',type:'hotel',desc:'Nil kənarında lüks Fransız oteli.',price:'200+ USD/gecə',rating:'⭐ 4.8',location:'Nil kənarı',hours:'24 saat',mapQ:'Sofitel Cairo Nile El Gezirah',booking:'https://www.booking.com/hotel/eg/sofitel-cairo-nile-el-gezirah.html'},
+      ]
+    },
+    quickQ:['Misirdə 5 günlük tur planı yaz','Piramidlərə necə getmək?','Misir vizası lazımdırmı?','Ən yaxşı vaxt?']
+  },
+
+  luxor:{
+    flag:'🇪🇬',name:'LÜKSÖR',tagline:'FİRONLAR ŞƏHƏRİ • QƏDIM TEB',
+    color:'#FFD700',bg:'#1a0a00',
+    videos:[
+      {tag:'KARNAK',title:'Karnak Məbədi',desc:'Dünyanın ən böyük qədim məbəd kompleksi',emoji:'🏯',layers:['#1a1000','#2a1800','#FFD700'],dur:'14s'},
+      {tag:'VADİ',title:'Krallar Vadisi',desc:'Fironların məzarları • Tutankamon',emoji:'⚱️',layers:['#2a1500','#3a2000','#E8A020'],dur:'12s'},
+      {tag:'NİL ŞƏLALƏRI',title:'Nil üzərindəki xarabalıqlar',desc:'Ən gözəl çay gəzintisi dünyada',emoji:'🛶',layers:['#001a30','#002540','#40A0FF'],dur:'13s'},
+    ],
+    places:{
+      tourist:[
+        {name:'Karnak Məbədi',emoji:'🏯',type:'tourist',desc:'3000 il tarix. Əzəmətli sütunlar.',price:'180 EGP',rating:'⭐ 4.9',location:'Lüksör',hours:'06:00–17:30',mapQ:'Karnak Temple Luxor',booking:''},
+        {name:'Krallar Vadisi',emoji:'⚱️',type:'tourist',desc:'Tutankamon məzarı. Fironlar şəhəri.',price:'240 EGP',rating:'⭐ 4.8',location:'Qərbi Lüksör',hours:'06:00–17:00',mapQ:'Valley of Kings Luxor Egypt',booking:''},
+        {name:'Lüksör Məbədi',emoji:'🌙',type:'tourist',desc:'Gecə işıqlanması ilə unudulmaz.',price:'160 EGP',rating:'⭐ 4.8',location:'Lüksör mərkəz',hours:'06:00–22:00',mapQ:'Luxor Temple Egypt',booking:''},
+      ],
+      restaurant:[
+        {name:'El-Moudira',emoji:'🥗',type:'restaurant',desc:'Nil kənarında açıq hava restoranı.',price:'150–300 EGP',rating:'⭐ 4.7',location:'Lüksör Nil',hours:'12:00–23:00',mapQ:'El Moudira Restaurant Luxor',booking:''},
+      ],
+      shopping:[
+        {name:'Lüksör Bazarı',emoji:'🛒',type:'shopping',desc:'Papirus, heykəllər, Misir suvenirlər.',price:'Müxtəlif',rating:'⭐ 4.4',location:'Lüksör mərkəz',hours:'09:00–22:00',mapQ:'Luxor Bazaar Egypt',booking:''},
+      ],
+      hotel:[
+        {name:'Winter Palace Hotel',emoji:'🏰',type:'hotel',desc:'1886-dan bəri. Tarixi ingilis oteli.',price:'150+ USD/gecə',rating:'⭐ 4.8',location:'Nil kənarı',hours:'24 saat',mapQ:'Winter Palace Hotel Luxor',booking:'https://www.booking.com/hotel/eg/the-winter-palace-sofitel-winter-palace.html'},
+      ]
+    },
+    quickQ:['Lüksördə nə görməli?','Kairodan Lüksorə necə getmək?','Nə vaxt getmək lazım?']
+  },
+
+  istanbul:{
+    flag:'🇹🇷',name:'İSTANBUL',tagline:'WHERE EAST MEETS WEST',
+    color:'#E84040',bg:'#0d1420',
+    videos:[
+      {tag:'AYASOFYA',title:'Ayasofya',desc:'1500 illik tarix • Bizans + Osmanlı',emoji:'🕌',mp4:'4927',dur:'12s'},
+      {tag:'BOĞAZ',title:'Boğaz Turu',desc:'İki qitə arasında • Gəmi gəzintisi',emoji:'⛵',mp4:'39329',dur:'11s'},
+      {tag:'BAZAR',title:'Qrand Bazaar',desc:'4000+ mağaza • 500 il tarix',emoji:'🏪',mp4:'4928',dur:'10s'},
+      {tag:'TOPKAPI',title:'Topkapı Sarayı',desc:'Osmanlı imperatorları sarayı',emoji:'🏯',mp4:'4929',dur:'13s'},
+    ],
+    places:{tourist:[],restaurant:[],shopping:[],hotel:[]},
+    quickQ:['İstanbulda 3 günlük tur','Boğaz turu haqqında?','Viza lazımdırmı?','Ən yaxşı restoran?']
+  },
+  paris:{
+    flag:'🇫🇷',name:'PARIS',tagline:'THE CITY OF LIGHT',
+    color:'#4A90D9',bg:'#080d18',
+    videos:[
+      {tag:'EYFEL',title:'Eyfel Qülləsi',desc:'Fransanın simvolu • Gecə işıqlanması',emoji:'🗼',mp4:'4580',dur:'12s'},
+      {tag:'LUVR',title:'Luvr Muzeyi',desc:'Mona Liza • Dünya sənəti',emoji:'🏛️',mp4:'26875',dur:'11s'},
+      {tag:'CHAMPS',title:'Champs-Élysées',desc:'Dünyanın ən məşhur küçəsi',emoji:'🛍️',mp4:'4581',dur:'10s'},
+    ],
+    places:{tourist:[],restaurant:[],shopping:[],hotel:[]},
+    quickQ:['Paris 4 günlük tur planı','Eyfel bileyi neçədir?','Ən romantik yerlər?','Paris büdcəsi?']
+  },
+  baku:{
+    flag:'🇦🇿',name:'BAKI',tagline:'CITY OF WINDS & FIRE',
+    color:'#FF6B00',bg:'#080e18',
+    videos:[
+      {tag:'ALOV QÜLLƏLƏRİ',title:'Alov Qüllələri',desc:'Bakının simvolu • Gecə alov effekti',emoji:'🔥',mp4:'39451',dur:'11s'},
+      {tag:'ŞƏHƏRİN MƏRKƏZİ',title:'Bakı Şəhəri',desc:'Müasir memarlıq • Xəzər kənarında',emoji:'🏙️',mp4:'20116',dur:'12s'},
+      {tag:'BULVAR',title:'Sahil Bulvarı',desc:'Xəzər boyunca gəzinti • Gecə mənzərəsi',emoji:'🌊',mp4:'39441',dur:'10s'},
+    ],
+    places:{tourist:[],restaurant:[],shopping:[],hotel:[]},
+    quickQ:['Bakıda nə görməli?','Ən yaxşı plov restoranı?','Bakıdan hara getmək olar?','Bakı büdcəsi?']
+  },
+  tokyo:{flag:'🇯🇵',name:'TOKYO',tagline:'WHERE FUTURE BEGINS',color:'#FF4488',bg:'#0a0010',
+    videos:[{tag:'SHIBUYA',title:'Shibuya Crossing',desc:'2.5M insan/gün',emoji:'🚶',mp4:'2275',dur:'12s'},{tag:'SENSO-JI',title:'Senso-ji Məbədi',desc:'628-ci ildən',emoji:'⛩️',mp4:'2276',dur:'11s'}],
+    places:{tourist:[],restaurant:[],shopping:[],hotel:[]},quickQ:['Tokyo 5 günlük tur','Tokyo metro?','Ən dadlı yeməklər?','Tokyo büdcəsi?']},
+  bali:{flag:'🇮🇩',name:'BALI',tagline:'ISLAND OF THE GODS',color:'#2ECC71',bg:'#041408',
+    videos:[{tag:'ULUWATU',title:'Uluwatu Məbədi',desc:'Uçurumun kənarında Hindu məbədi',emoji:'🛕',mp4:'1671',dur:'12s'},{tag:'BEACH',title:'Bali Çimərlikləri',desc:'Tropik cənnət',emoji:'🏄',mp4:'1672',dur:'11s'}],
+    places:{tourist:[],restaurant:[],shopping:[],hotel:[]},quickQ:['Bali 7 günlük tur','Ubud mu Kuta mu?','Nə vaxt getmək?','Ucuz otel?']},
+  rome:{flag:'🇮🇹',name:'ROMA',tagline:'ETERNAL CITY',color:'#E8A020',bg:'#120800',
+    videos:[{tag:'KOLESEY',title:'Kolesey',desc:'2000 illik tarix',emoji:'🏟️',mp4:'3273',dur:'12s'},{tag:'VATİKAN',title:'Vatikan',desc:'Dünyanın ən kiçik dövləti',emoji:'⛪',mp4:'3274',dur:'11s'}],
+    places:{tourist:[],restaurant:[],shopping:[],hotel:[]},quickQ:['Roma 4 günlük tur','Vatikana bilet?','Ən yaxşı pasta?','Roma büdcəsi?']},
+  barcelona:{flag:'🇪🇸',name:'BARSELONA',tagline:'PASSION & ARCHITECTURE',color:'#FF3030',bg:'#120004',
+    videos:[{tag:'SAGRADA',title:'Sagrada Família',desc:'Gaudinin möcüzəsi',emoji:'⛪',mp4:'5020',dur:'12s'},{tag:'BEACH',title:'Barceloneta',desc:'Aralıq dənizi çimərliyi',emoji:'🏖️',mp4:'5021',dur:'11s'}],
+    places:{tourist:[],restaurant:[],shopping:[],hotel:[]},quickQ:['Barselona 4 günlük tur','Sagrada bilet?','Çimərlikler?','FC Barcelona oyunu?']},
+  newyork:{flag:'🇺🇸',name:'NEW YORK',tagline:'CITY THAT NEVER SLEEPS',color:'#40A0FF',bg:'#00060e',
+    videos:[{tag:'TIMES SQ',title:'Times Square',desc:'Heç yatmayan şəhər',emoji:'🌃',mp4:'3122',dur:'12s'},{tag:'CENTRAL PARK',title:'Central Park',desc:'840 hektar yaşıllıq',emoji:'🌳',mp4:'3123',dur:'11s'}],
+    places:{tourist:[],restaurant:[],shopping:[],hotel:[]},quickQ:['NYC 5 günlük tur','Ən yaxşı rayon?','Metro necə işləyir?','NYC büdcəsi?']},
+  maldives:{flag:'🇲🇻',name:'MALDİV',tagline:'PARADISE ON EARTH',color:'#20D4C0',bg:'#00080c',
+    videos:[{tag:'PARADISE',title:'Maldiv Atoll',desc:'Şəffaf mavi su',emoji:'🐠',mp4:'1866',dur:'13s'},{tag:'OVERWATER',title:'Su Villası',desc:'Okean üzərindəki cənnət',emoji:'🏖️',mp4:'1867',dur:'12s'}],
+    places:{tourist:[],restaurant:[],shopping:[],hotel:[]},quickQ:['Maldiv turu neçəyə?','Su villası?','Snorkeling harada?','Nə vaxt getmək?']},
+};
+
+const CM={
+  'dubai':'dubai','дубай':'dubai','dubay':'dubai',
+  'istanbul':'istanbul','İstanbul':'istanbul','стамбул':'istanbul',
+  'kahire':'kahire','cairo':'kahire','каир':'kahire','mısır':'kahire','misir':'kahire','egypt':'kahire','мисир':'kahire',
+  'luxor':'luxor','lüksör':'luxor','луксор':'luxor',
+  'paris':'paris','париж':'paris',
+  'bali':'bali','бали':'bali',
+  'tokyo':'tokyo','токио':'tokyo',
+  'baku':'baku','bakı':'baku','баку':'baku','baki':'baku',
+  'rome':'rome','roma':'rome','рим':'rome',
+  'barcelona':'barcelona','barselona':'barcelona','барселона':'barcelona',
+  'new york':'newyork','nyu york':'newyork','newyork':'newyork',
+  'maldives':'maldives','maldiv':'maldives','мальдивы':'maldives',
+};
+
+// Yaxın yerlər — GPS-ə görə
+const NEARBY_PLACES = {
+  // Azərbaycan
+  AZ:[
+    {name:'İçərişəhər',emoji:'🏰',type:'Tarixi yer',dist:'0.8km',bg:'linear-gradient(135deg,#1a1000,#2a1800)'},
+    {name:'Alov Qüllələri',emoji:'🔥',type:'Turistik',dist:'1.2km',bg:'linear-gradient(135deg,#1a0300,#330600)'},
+    {name:'Sahil Bulvarı',emoji:'🌊',type:'Gəzinti',dist:'0.5km',bg:'linear-gradient(135deg,#001a30,#002a50)'},
+    {name:'Nizami Küçəsi',emoji:'🛒',type:'Alışveriş',dist:'0.9km',bg:'linear-gradient(135deg,#0a0510,#150820)'},
+  ],
+  // UAE
+  AE:[
+    {name:'Burj Khalifa',emoji:'🏙️',type:'Turistik',dist:'2.1km',bg:'linear-gradient(135deg,#0a1520,#1a2a40)'},
+    {name:'Dubai Mall',emoji:'🛍️',type:'Alışveriş',dist:'2.3km',bg:'linear-gradient(135deg,#0a0510,#150820)'},
+    {name:'Dubai Fountain',emoji:'⛲',type:'Turistik',dist:'2.5km',bg:'linear-gradient(135deg,#001530,#002550)'},
+  ],
+  // Egypt
+  EG:[
+    {name:'Gizə Piramidləri',emoji:'🏺',type:'Tarixi yer',dist:'15km',bg:'linear-gradient(135deg,#2a1500,#4a2500)'},
+    {name:'Sfenks',emoji:'🦁',type:'Turistik',dist:'15km',bg:'linear-gradient(135deg,#1a0a00,#3a1500)'},
+    {name:'Misir Muzeyi',emoji:'🏛️',type:'Muzey',dist:'3.2km',bg:'linear-gradient(135deg,#0a0a1a,#151530)'},
+  ],
+  DEFAULT:[
+    {name:'Məşhur Restoran',emoji:'🍽️',type:'Restoran',dist:'0.3km',bg:'linear-gradient(135deg,#1a0800,#2a1500)'},
+    {name:'Yerli Bazar',emoji:'🛒',type:'Bazar',dist:'0.5km',bg:'linear-gradient(135deg,#0a1000,#1a2000)'},
+    {name:'Mərkəzi Park',emoji:'🌳',type:'Park',dist:'0.8km',bg:'linear-gradient(135deg,#002a00,#004500)'},
+    {name:'Tarix Muzeyi',emoji:'🏛️',type:'Muzey',dist:'1.2km',bg:'linear-gradient(135deg,#0a0510,#150820)'},
+  ]
+};
+
+// =====================
+// POPULAR CITIES
+// =====================
+const POP_CITIES=[
+  {key:'dubai',flag:'🇦🇪',name:'Dubai',count:'6 video'},
+  {key:'kahire',flag:'🇪🇬',name:'Kahirə',count:'6 video'},
+  {key:'istanbul',flag:'🇹🇷',name:'İstanbul',count:'4 video'},
+  {key:'paris',flag:'🇫🇷',name:'Paris',count:'3 video'},
+  {key:'baku',flag:'🇦🇿',name:'Bakı',count:'3 video'},
+  {key:'tokyo',flag:'🇯🇵',name:'Tokyo',count:'2 video'},
+  {key:'bali',flag:'🇮🇩',name:'Bali',count:'2 video'},
+  {key:'rome',flag:'🇮🇹',name:'Roma',count:'2 video'},
+  {key:'barcelona',flag:'🇪🇸',name:'Barselona',count:'2 video'},
+  {key:'newyork',flag:'🇺🇸',name:'New York',count:'2 video'},
+  {key:'maldives',flag:'🇲🇻',name:'Maldiv',count:'2 video'},
+  {key:'luxor',flag:'🇪🇬',name:'Lüksör',count:'3 video'},
+];
+
+// =====================
+// STATE
+// =====================
+let OR_KEY='';
+let OR_MODEL='meta-llama/llama-3.3-70b-instruct:free';
+let curCity=null,curItem=null,aiLoading=false,chatHistory=[];
+let tourDays=2;
+let bannerIdx=0,bannerTimer=null;
+let aiOpen=false;
+
+// =====================
+// API KEY — OpenRouter
+// =====================
+function saveORKey(){
+  const v=document.getElementById('orKeyInp').value.trim();
+  const model=document.getElementById('modelSelect').value;
+  if(!v.startsWith('sk-or')){document.getElementById('apiErrOR').classList.add('show');return}
+  document.getElementById('apiErrOR').classList.remove('show');
+  OR_KEY=v;OR_MODEL=model;
+  localStorage.setItem('hg_or_key',v);
+  localStorage.setItem('hg_or_model',model);
+  updateAIBadge();
+  document.getElementById('apiScreen').style.display='none';
+  startApp();
+}
+function skipAPI(){
+  document.getElementById('apiScreen').style.display='none';
+  startApp();
+}
+function changeKey(){
+  document.getElementById('orKeyInp').value=OR_KEY||'';
+  document.getElementById('apiScreen').style.display='flex';
+}
+function toggleEye(inputId){
+  const inp=document.getElementById(inputId||'orKeyInp');
+  inp.type=inp.type==='password'?'text':'password';
+}
+function updateAIBadge(){
+  const nameEl=document.getElementById('aiProviderName');
+  const tagEl=document.getElementById('aiProviderTag');
+  const badgeEl=document.getElementById('aiBadgeText');
+  if(OR_KEY){
+    const mn=OR_MODEL.split('/').pop().replace(':free','').replace(/-instruct/g,'').replace(/-/g,' ').trim();
+    if(nameEl)nameEl.textContent='OpenRouter';
+    if(tagEl)tagEl.textContent=`— ${mn}`;
+    if(badgeEl)badgeEl.textContent='AI aktiv';
+  }else{
+    if(nameEl)nameEl.textContent='AI';
+    if(tagEl)tagEl.textContent='— Aktivləşdirilməyib';
+    if(badgeEl)badgeEl.textContent='AI yoxdur';
+  }
+}
+function init(){
+  const k=localStorage.getItem('hg_or_key')||'';
+  const m=localStorage.getItem('hg_or_model')||OR_MODEL;
+  if(k.startsWith('sk-or')){
+    OR_KEY=k;OR_MODEL=m;
+    updateAIBadge();
+    document.getElementById('apiScreen').style.display='none';
+    startApp();
+  }
+}
+
+// =====================
+// APP START
+// =====================
+function startApp(){
+  buildPopGrid();
+  getLocation();
+  // İlk açılışda AI salamlayır
+  setTimeout(()=>{
+    document.getElementById('aiBadge').style.display='flex';
+    document.getElementById('aiBadge').textContent='1';
+  },2000);
+}
+
+function buildPopGrid(){
+  document.getElementById('popGrid').innerHTML=POP_CITIES.map(c=>`
+    <div class="pop-card" onclick="searchCity('${c.key}')">
+      <div class="pop-flag">${c.flag}</div>
+      <div class="pop-name">${c.name}</div>
+      <div class="pop-count">${c.count}</div>
+    </div>
+  `).join('');
+}
+
+// =====================
+// GPS / LOCATION
+// =====================
+function getLocation(){
+  if(!navigator.geolocation){
+    showNearby('DEFAULT','Yaxınlığınızda');
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(
+    pos=>{
+      const {latitude:lat,longitude:lng}=pos.coords;
+      let country='DEFAULT',cityName='Yaxınlığınızda';
+      // Azərbaycan: 38-42N, 44-51E
+      if(lat>=38&&lat<=42&&lng>=44&&lng<=51){country='AZ';cityName='Bakı, Azərbaycan'}
+      // UAE: 22-26N, 51-56E
+      else if(lat>=22&&lat<=26&&lng>=51&&lng<=56){country='AE';cityName='Dubai, UAE'}
+      // Misir: 22-32N, 25-37E
+      else if(lat>=22&&lat<=32&&lng>=25&&lng<=37){country='EG';cityName='Misir'}
+      document.getElementById('locBadge').textContent=`📍 ${cityName}`;
+      showNearby(country,cityName);
+      // AI-ya yerini bildir
+      chatHistory=[];
+      addAIMsg(`Sizi ${cityName} bölgəsindən aşkarladım! 📍\n\nYaxınlığınızdakı turistik yerlər yükləndi. Hər hansı şəhər haqqında soruşun!`);
+    },
+    ()=>{
+      document.getElementById('locBadge').textContent='📍 Müəyyən edilmədi';
+      showNearby('DEFAULT','Yaxınlığınızda');
+      addAIMsg('Salam! Haraya getmək istədiyinizi yazın — tur planı, otellər, restoranlar — hamısında kömək edirəm! 🌍');
+    },
+    {timeout:8000}
+  );
+}
+
+function showNearby(country,cityName){
+  const places=NEARBY_PLACES[country]||NEARBY_PLACES.DEFAULT;
+  document.getElementById('nearbyScroll').innerHTML=places.map(p=>`
+    <div class="nearby-card" onclick="qAsk('${p.name} haqqında məlumat ver')">
+      <div class="nearby-img" style="background:${p.bg}">
+        ${p.emoji}
+        <div class="nearby-dist">${p.dist}</div>
+      </div>
+      <div class="nearby-info">
+        <div class="nearby-name">${p.name}</div>
+        <div class="nearby-type">${p.type}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// =====================
+// SEARCH
+// =====================
+function searchCity(c){document.getElementById('searchInput').value=c;doSearch()}
+function doSearch(){
+  const q=document.getElementById('searchInput').value.trim().toLowerCase();
+  if(!q)return;
+  const key=CM[q]||CM[Object.keys(CM).find(k=>q.includes(k)||k.includes(q))]||null;
+  if(!key||!CITIES[key])return;
+  showCityIntro(key,()=>loadCity(key));
+}
+function goHome(){
+  curCity=null;
+  document.getElementById('cityPage').classList.remove('show');
+  document.getElementById('popularSection').style.display='block';
+  document.getElementById('nearbySection').style.display='block';
+  document.getElementById('searchInput').value='';
+  if(bannerTimer)clearInterval(bannerTimer);
+  chatHistory=[];
+}
+
+// =====================
+// LOAD CITY
+// =====================
+function loadCity(key){
+  curCity=key;
+  const ci=CITIES[key];
+  document.getElementById('popularSection').style.display='none';
+  document.getElementById('nearbySection').style.display='none';
+  document.getElementById('cityPage').classList.add('show');
+
+  // Banner
+  document.getElementById('bannerFlag').textContent=ci.flag;
+  document.getElementById('bannerTitle').textContent=ci.name;
+  document.getElementById('bannerSub').textContent=ci.tagline;
+  buildBannerCSS(ci);
+
+  // Tabs reset
+  document.querySelectorAll('.ctab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.ctab')[0].classList.add('active');
+  ['tabVideo','tabPlaces','tabTour','tabFlight','tabEsim','tabCar','tabMaps','tabHotelSearch'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el){el.classList.remove('active');el.style.display='none'}
+  });
+  document.getElementById('tabVideo').classList.add('active');
+  document.getElementById('tabVideo').style.display='flex';
+
+  // Render videos
+  renderVideoFeed(ci.videos,key);
+
+  // Hava + Valyuta yüklə
+  loadWeather(key);
+  loadCurrency(key);
+
+  // AI quick questions
+  document.getElementById('aiQuick').innerHTML=`
+    <button class="aiq" onclick="qAsk('${ci.name} ${tourDays} günlük tur planı hazırla')">🗓️ Tur planı</button>
+    ${(ci.quickQ||[]).map(q=>`<button class="aiq" onclick="qAsk('${q}')">${q}</button>`).join('')}
+  `;
+
+  // AI greeting
+  chatHistory=[];
+  addAIMsg(`${ci.flag} ${ci.name} — möhtəşəm seçim! 🌟\n\nNə bilmək istəyirsiniz?\n• 🗓️ Tur planı\n• 🏨 Otel tövsiyəsi\n• 🍽️ Restoranlar\n• 💰 Büdcə\n• ✈️ Necə getmək`);
+
+  // Open AI
+  setTimeout(()=>toggleAI(true),500);
+}
+
+// =====================
+// BANNER CSS
+// =====================
+function buildBannerCSS(ci){
+  const vids=ci.videos||[];
+  const css=document.getElementById('bannerCSS');
+  const dots=document.getElementById('bannerDots');
+  css.innerHTML=vids.slice(0,4).map((v,i)=>`
+    <div style="position:absolute;inset:0;opacity:${i===0?1:0};transition:opacity 1s;z-index:${i===0?1:0}" id="bslide${i}">
+      <div style="position:absolute;inset:0;background:${v.layers[0]}"></div>
+      <div style="position:absolute;inset:0;background:radial-gradient(ellipse 80% 80% at 30% 50%,${v.layers[2]}33,transparent);animation:layerMove 8s ease-in-out infinite alternate"></div>
+      <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);font-size:70px;animation:emojiFloat 4s ease-in-out infinite;filter:drop-shadow(0 10px 30px rgba(0,0,0,0.5))">${v.emoji}</div>
+    </div>
+  `).join('');
+  dots.innerHTML=vids.slice(0,4).map((_,i)=>`<div class="bdot${i===0?' active':''}" onclick="goBanner(${i})"></div>`).join('');
+  bannerIdx=0;
+  if(bannerTimer)clearInterval(bannerTimer);
+  bannerTimer=setInterval(()=>{
+    const total=vids.slice(0,4).length;
+    const prev=bannerIdx;
+    bannerIdx=(bannerIdx+1)%total;
+    const ps=document.getElementById('bslide'+prev);
+    const ns=document.getElementById('bslide'+bannerIdx);
+    if(ps){ps.style.opacity='0';ps.style.zIndex='0'}
+    if(ns){ns.style.opacity='1';ns.style.zIndex='1'}
+    document.querySelectorAll('.bdot').forEach((d,i)=>d.classList.toggle('active',i===bannerIdx));
+  },4000);
+}
+function goBanner(i){
+  const prev=bannerIdx;bannerIdx=i;
+  const ps=document.getElementById('bslide'+prev);
+  const ns=document.getElementById('bslide'+i);
+  if(ps){ps.style.opacity='0';ps.style.zIndex='0'}
+  if(ns){ns.style.opacity='1';ns.style.zIndex='1'}
+  document.querySelectorAll('.bdot').forEach((d,j)=>d.classList.toggle('active',j===i));
+}
+
+// =====================
+// VIDEO FEED — CSS animasiya
+// =====================
+function renderVideoFeed(videos,key){
+  const feed=document.getElementById('tabVideo');
+  if(!videos.length){feed.innerHTML='<div style="color:var(--gray);padding:20px;text-align:center">Video hazırlanır...</div>';return}
+  feed.innerHTML=videos.map((v,i)=>{
+    const mp4url=v.mp4?`https://assets.mixkit.co/videos/${v.mp4}/${v.mp4}-720.mp4`:'';
+    return `
+    <div class="vcard" id="vc${i}" style="animation-delay:${i*0.1}s">
+      <div class="vscreen">
+        ${mp4url?`<video id="vid${i}" src="${mp4url}" preload="metadata" playsinline loop muted style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;display:none"></video>`:''}
+        <div class="vcss-bg" id="vcss${i}">
+          <div style="position:absolute;inset:0;background:linear-gradient(135deg,#0a1520,#0d1f35)"></div>
+          <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);font-size:72px;animation:emojiFloat 4s ease-in-out infinite;filter:drop-shadow(0 10px 30px rgba(0,0,0,0.5));z-index:2">${v.emoji}</div>
+        </div>
+        <div class="voverlay"></div>
+        <div class="vplay-btn" id="vplay${i}" onclick="playVid(${i})">
+          <div class="vplay-circle">▶</div>
+        </div>
+        <div class="vlive" id="vlive${i}">● LIVE</div>
+        <div class="vtag-badge">${v.tag}</div>
+        <div class="vdur">🎬 ${v.dur}</div>
+        <div class="vside">
+          <button class="vsb" onclick="event.stopPropagation();likeVid(this)">❤️</button>
+          <div class="vsb-count">${Math.floor(Math.random()*900+100)}</div>
+          <button class="vsb follow-btn" onclick="event.stopPropagation();followVid(this,'${v.title}')">➕</button>
+          <button class="vsb" onclick="event.stopPropagation();shareVid('${v.title}')">📤</button>
+        </div>
+        <div class="vprogress"><div class="vpbar" id="vpbar${i}"></div></div>
+      </div>
+      <div class="vbar">
+        <div class="vbar-tag">${v.tag}</div>
+        <div class="vbar-title">${v.title}</div>
+        <div class="vbar-desc">${v.desc}</div>
+        <div class="vbar-acts">
+          <button class="vba" onclick="playVid(${i})">▶ İzlə</button>
+          <button class="vba" onclick="qAsk('${v.title} haqqında ətraflı məlumat ver, nə görməli, qiymətlər, məsləhətlər?');toggleAI(true)">🤖 AI soruş</button>
+          <button class="vba taxi" onclick="openTaxi('${v.emoji}','${v.title}','${CITIES[key]?.name||key}')">🚕 Taksi</button>
+          <a class="vba book" href="https://www.booking.com/searchresults.html?ss=${encodeURIComponent(v.title)}" target="_blank">🏨 Book</a>
+        </div>
+      </div>
+    </div>
+  `}).join('');
+}
+
+function playVid(i){
+  const vid=document.getElementById('vid'+i);
+  const playBtn=document.getElementById('vplay'+i);
+  const live=document.getElementById('vlive'+i);
+  const css=document.getElementById('vcss'+i);
+  const bar=document.getElementById('vpbar'+i);
+
+  if(!vid){return}
+
+  if(vid.style.display==='none'||!vid.style.display){
+    // Video göstər, CSS fonu gizlət
+    vid.style.display='block';
+    css.style.display='none';
+    playBtn.style.display='none';
+    live.style.display='flex';
+    bar.style.animation='vProgress 12s linear forwards';
+    vid.muted=false;
+    vid.play().catch(()=>{vid.muted=true;vid.play()});
+  }else{
+    // Pause/play toggle
+    if(vid.paused){vid.play();playBtn.style.display='none';live.style.display='flex'}
+    else{vid.pause();playBtn.style.display='flex';live.style.display='none'}
+  }
+}
+function likeVid(btn){btn.textContent=btn.textContent==='❤️'?'🧡':'❤️';btn.style.transform='scale(1.4)';setTimeout(()=>btn.style.transform='',300)}
+function followVid(btn,title){
+  const card=btn.closest('.vcard');
+  card.classList.toggle('followed');
+  btn.textContent=card.classList.contains('followed')?'✅':'➕';
+  if(card.classList.contains('followed')){showToast(`✅ ${title} izlənildi!`)}
+}
+function shareVid(title){
+  const url=window.location.href;
+  if(navigator.share){navigator.share({title:'Haraya Getsən — '+title,url})}
+  else{navigator.clipboard?.writeText(url);showToast('📋 Link kopyalandı!')}
+}
+function showToast(msg){
+  const t=document.getElementById('shareToast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2500);
+}
+
+// =====================
+// TABS
+// =====================
+function switchCityTab(type,btn){
+  document.querySelectorAll('.ctab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  // Hamısını gizlət
+  ['tabVideo','tabPlaces','tabTour','tabFlight','tabEsim','tabCar','tabMaps','tabHotelSearch'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el){el.classList.remove('active');el.style.display='none'}
+  });
+  // Video feed xüsusi class ilə işləyir
+  if(type==='video'){
+    document.getElementById('tabVideo').classList.add('active');
+    document.getElementById('tabVideo').style.display='flex';
+  } else if(type==='tour'){
+    document.getElementById('tabTour').style.display='block';
+    document.getElementById('tabTour').classList.add('active');
+  } else if(type==='flight'){
+    document.getElementById('tabFlight').style.display='block';
+    document.getElementById('tabFlight').classList.add('active');
+    initFlightSection(curCity);
+  } else if(type==='car'){
+    document.getElementById('tabCar').style.display='block';
+    document.getElementById('tabCar').classList.add('active');
+    initCarSection(curCity);
+  } else if(type==='esim'){
+    document.getElementById('tabEsim').style.display='block';
+    document.getElementById('tabEsim').classList.add('active');
+    initEsimSection(curCity);
+  } else if(type==='maps'){
+    document.getElementById('tabMaps').style.display='block';
+    document.getElementById('tabMaps').classList.add('active');
+    initMapsSection(curCity);
+  } else if(type==='hotel'){
+    // Otel tab: həm places həm də hotel search göstər
+    document.getElementById('tabHotelSearch').style.display='block';
+    initHotelSearch(curCity);
+    const places=CITIES[curCity]?.places['hotel']||[];
+    if(places.length){
+      document.getElementById('tabPlaces').style.display='block';
+      document.getElementById('tabPlaces').classList.add('active');
+      renderPlaces(places);
+    }
+  } else {
+    document.getElementById('tabPlaces').style.display='block';
+    document.getElementById('tabPlaces').classList.add('active');
+    const places=CITIES[curCity]?.places[type]||[];
+    if(places.length){renderPlaces(places)}
+    else{
+      document.getElementById('tabPlaces').innerHTML=`
+        <div style="text-align:center;padding:40px 20px;color:var(--gray)">
+          <div style="font-size:36px;margin-bottom:12px">🤖</div>
+          <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:8px">AI-dan soruş</div>
+          <div style="font-size:13px;margin-bottom:16px">${CITIES[curCity]?.name||''} üçün ${btn.textContent} siyahısı hazır deyil.</div>
+          <button onclick="qAsk('${CITIES[curCity]?.name||''} ${btn.textContent} tövsiyələri ver');toggleAI(true)" style="background:var(--orange);border:none;border-radius:12px;padding:12px 20px;color:white;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;cursor:pointer">🤖 AI-dan soruş</button>
+        </div>
+      `;
+    }
+  }
+}
+
+function renderPlaces(places){
+  document.getElementById('tabPlaces').innerHTML=`<div class="places-grid">${places.map((p,i)=>`
+    <div class="pcard" style="animation-delay:${i*0.08}s" onclick='openDetail(${JSON.stringify(p).replace(/'/g,"\\'")})'>
+      <div class="pcard-img" style="background:linear-gradient(135deg,#1a2a40,#0a1520)">${p.emoji}<div class="pcard-type">${TL[p.type]||'Yer'}</div><div class="pcard-rate">${p.rating}</div></div>
+      <div class="pcard-body"><div class="pcard-name">${p.name}</div><div class="pcard-desc">${p.desc}</div><div class="pcard-foot"><div class="pcard-price">${p.price}</div><div class="pcard-loc">📍 ${p.location}</div></div></div>
+    </div>
+  `).join('')}</div>`;
+}
+
+// =====================
+// DETAIL MODAL
+// =====================
+function openDetail(p){
+  if(typeof p==='string')p=JSON.parse(p);
+  curItem=p;
+  document.getElementById('dEmoji').textContent=p.emoji;
+  document.getElementById('dType').textContent=TL[p.type]||'📍 Yer';
+  document.getElementById('dName').textContent=p.name;
+  document.getElementById('dDesc').textContent=p.desc;
+  document.getElementById('dPrice').textContent=p.price;
+  document.getElementById('dRating').textContent=p.rating;
+  document.getElementById('dLoc').textContent=p.location;
+  document.getElementById('dHours').textContent=p.hours;
+  const q=encodeURIComponent(p.mapQ||p.name);
+  document.getElementById('dGmap').href=`https://www.google.com/maps/search/?api=1&query=${q}`;
+  document.getElementById('dYmap').href=`https://yandex.com/maps/?text=${q}`;
+  document.getElementById('dBook').href=p.booking||`https://www.booking.com/searchresults.html?ss=${encodeURIComponent(p.name)}`;
+  document.getElementById('detailOverlay').classList.add('show');
+}
+function openTaxiFromDetail(){if(curItem){document.getElementById('detailOverlay').classList.remove('show');openTaxi(curItem.emoji,curItem.name,curItem.location)}}
+function askAIAbout(){
+  if(curItem){
+    document.getElementById('detailOverlay').classList.remove('show');
+    qAsk(`${curItem.name} haqqında ətraflı məlumat ver — nə görməli, qiymətlər, praktik məsləhətlər, ən yaxşı vaxt`);
+    toggleAI(true);
+  }
+}
+
+// =====================
+// TAXI
+// =====================
+function openTaxi(emoji,name,loc){
+  document.getElementById('taxiIcon').textContent=emoji;
+  document.getElementById('taxiName').textContent=name;
+  document.getElementById('taxiLoc').textContent=loc;
+  document.getElementById('uberLink').href=`https://m.uber.com/ul/?action=setPickup&dropoff[formatted_address]=${encodeURIComponent(name+' '+loc)}`;
+  document.getElementById('taxiOverlay').classList.add('show');
+}
+
+// =====================
+// UNIVERSAL AI CALL — OpenRouter
+// =====================
+async function callAI(prompt, maxTokens=800){
+  if(!OR_KEY) throw new Error('NO_AI');
+  const model=OR_MODEL||'meta-llama/llama-3.3-70b-instruct:free';
+  const res=await fetch('https://openrouter.ai/api/v1/chat/completions',{
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'Authorization':`Bearer ${OR_KEY}`,
+      'HTTP-Referer':window.location.href,
+      'X-Title':'Haraya Getsen'
+    },
+    body:JSON.stringify({
+      model:model,
+      max_tokens:maxTokens,
+      messages:[{role:'user',content:prompt}]
+    })
+  });
+  if(!res.ok){
+    const errText=await res.text().catch(()=>'');
+    throw new Error(`OR_${res.status}: ${errText.slice(0,100)}`);
+  }
+  const d=await res.json();
+  return d.choices?.[0]?.message?.content||'';
+}
+
+// =====================
+// AI TUR PLANLAYICI
+// =====================
+function selectDays(d,btn){
+  tourDays=d;
+  document.querySelectorAll('.tour-day-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+async function generateTour(){
+  if(!curCity)return;
+  const ci=CITIES[curCity];
+  document.getElementById('tourLoading').classList.add('show');
+  document.getElementById('tourResult').classList.remove('show');
+  document.getElementById('tourResult').innerHTML='';
+
+  const prompt=`${ci.name} şəhəri üçün ${tourDays} günlük tam səyahət planı hazırla. Azərbaycan dilində yaz.
+
+Hər gün üçün:
+- Səhər, gündüz, axşam fəaliyyətlər
+- Restoran tövsiyələri
+- Nəqliyyat məsləhəti
+- Təxmini büdcə (USD)
+
+Sonda: Ümumi büdcə + Booking.com xatırlat. Emoji istifadə et!`;
+
+  try{
+    const txt=await callAI(prompt,1500);
+    document.getElementById('tourLoading').classList.remove('show');
+    document.getElementById('tourResult').innerHTML=txt.replace(/\n/g,'<br>');
+    document.getElementById('tourResult').classList.add('show');
+  }catch(e){
+    document.getElementById('tourLoading').classList.remove('show');
+    const msg=e.message==='NO_AI'?'⚠️ AI quraşdırılmayıb. 🔑 düyməsinə basın.':'⚠️ Xəta baş verdi. Yenidən cəhd edin.';
+    document.getElementById('tourResult').innerHTML=msg;
+    document.getElementById('tourResult').classList.add('show');
+  }
+}
+
+// =====================
+// AI CHAT
+// =====================
+function toggleAI(forceOpen){
+  aiOpen=forceOpen===true?true:!aiOpen;
+  const drawer=document.getElementById('aiDrawer');
+  drawer.classList.toggle('open',aiOpen);
+  if(aiOpen){
+    document.getElementById('aiBadge').style.display='none';
+    setTimeout(()=>document.getElementById('aiInp').focus(),400);
+  }
+}
+
+function addAIMsg(text){
+  const msgs=document.getElementById('aiMsgs');
+  const div=document.createElement('div');
+  div.className='msg msg-ai';
+  div.innerHTML=text.replace(/\n/g,'<br>');
+  msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;
+}
+function addUserMsg(text){
+  const msgs=document.getElementById('aiMsgs');
+  const div=document.createElement('div');div.className='msg msg-user';
+  div.textContent=text;msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;
+}
+function showTyping(){
+  const msgs=document.getElementById('aiMsgs');
+  const div=document.createElement('div');div.className='msg msg-typing';div.id='typDot';
+  div.innerHTML='<div class="typing-dots"><span></span><span></span><span></span></div>';
+  msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;
+}
+function hideTyping(){const t=document.getElementById('typDot');if(t)t.remove()}
+
+function qAsk(q){
+  document.getElementById('aiInp').value=q;
+  if(!aiOpen)toggleAI(true);
+  setTimeout(()=>sendAI(),300);
+}
+
+async function sendAI(){
+  const inp=document.getElementById('aiInp');
+  const text=inp.value.trim();
+  if(!text||aiLoading)return;
+  addUserMsg(text);inp.value='';resizeInp(inp);
+  aiLoading=true;document.getElementById('aiSendBtn').disabled=true;
+  showTyping();
+  chatHistory.push({role:'user',content:text});
+
+  const ci=curCity?CITIES[curCity]:null;
+  const sys=`Sən "Haraya Getsən" premium travel app-in AI köməkçisisən.
+Vəzifən: Səyahət planlaması, tur paketləri, otel tövsiyəsi, restoran, turistik yer, viza, büdcə, nəqliyyat.
+Cari şəhər: ${ci?ci.flag+' '+ci.name:'seçilməyib'}
+Dil: Azərbaycan (başqa dildə yazılsa o dildə cavab ver)
+Üslub: Qısa, praktik, emojili (max 150 söz)`;
+
+  try{
+    if(!OR_KEY) throw new Error('NO_AI');
+    const msgs=[{role:'system',content:sys},...chatHistory];
+    const res=await fetch('https://openrouter.ai/api/v1/chat/completions',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'Authorization':`Bearer ${OR_KEY}`,
+        'HTTP-Referer':window.location.href,
+        'X-Title':'Haraya Getsen'
+      },
+      body:JSON.stringify({
+        model:OR_MODEL||'meta-llama/llama-3.3-70b-instruct:free',
+        max_tokens:500,
+        messages:msgs
+      })
+    });
+    hideTyping();
+    if(res.ok){
+      const d=await res.json();
+      const txt=d.choices?.[0]?.message?.content||'';
+      if(txt){
+        addAIMsg(txt);
+        chatHistory.push({role:'assistant',content:txt});
+        if(chatHistory.length>16)chatHistory=chatHistory.slice(-16);
+      }
+    }else if(res.status===401){
+      addAIMsg('❌ OpenRouter açarı yanlışdır. 🔑 düyməsinə basıb yenidən daxil edin.');
+      setTimeout(()=>changeKey(),1500);
+    }else if(res.status===429){
+      addAIMsg('⏳ Çox sürətli sorğu. 30 saniyə gözləyin.');
+    }else{
+      const errBody=await res.json().catch(()=>({}));
+      addAIMsg(`⚠️ Xəta: ${errBody?.error?.message||res.status}`);
+      chatHistory.pop();
+    }
+  }catch(e){
+    hideTyping();
+    if(e.message==='NO_AI'){
+      addAIMsg('⚠️ AI açarı yoxdur. 🔑 düyməsinə basın.');
+    }else{
+      addAIMsg('⚠️ Bağlantı xətası. İnternet bağlantınızı yoxlayın.');
+    }
+    chatHistory.pop();
+  }
+  aiLoading=false;document.getElementById('aiSendBtn').disabled=false;
+}
+
+function aiKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendAI()}}
+function resizeInp(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,80)+'px'}
+
+// =====================
+// CITY INTRO
+// =====================
+const CI={
+  dubai:{flag:'🇦🇪',name:'DUBAI',tagline:'LUXURY • ADVENTURE • FUTURE',color:'#FF6B00',bg:'#050f1e'},
+  kahire:{flag:'🇪🇬',name:'KAHİRƏ',tagline:'QƏDİM MİSİR • TARİX • ƏFSANƏ',color:'#E8A020',bg:'#120800'},
+  luxor:{flag:'🇪🇬',name:'LÜKSÖR',tagline:'FİRONLAR ŞƏHƏRİ',color:'#FFD700',bg:'#1a0a00'},
+  istanbul:{flag:'🇹🇷',name:'İSTANBUL',tagline:'WHERE EAST MEETS WEST',color:'#E84040',bg:'#0d1420'},
+  paris:{flag:'🇫🇷',name:'PARIS',tagline:'THE CITY OF LIGHT',color:'#4A90D9',bg:'#080d18'},
+  bali:{flag:'🇮🇩',name:'BALI',tagline:'ISLAND OF THE GODS',color:'#2ECC71',bg:'#041408'},
+  tokyo:{flag:'🇯🇵',name:'TOKYO',tagline:'WHERE FUTURE BEGINS',color:'#FF4488',bg:'#0a0010'},
+  baku:{flag:'🇦🇿',name:'BAKI',tagline:'CITY OF WINDS & FIRE',color:'#FF6B00',bg:'#080e18'},
+  rome:{flag:'🇮🇹',name:'ROMA',tagline:'ETERNAL CITY',color:'#E8A020',bg:'#120800'},
+  barcelona:{flag:'🇪🇸',name:'BARSELONA',tagline:'PASSION & ARCHITECTURE',color:'#FF3030',bg:'#120004'},
+  newyork:{flag:'🇺🇸',name:'NEW YORK',tagline:'CITY THAT NEVER SLEEPS',color:'#40A0FF',bg:'#00060e'},
+  maldives:{flag:'🇲🇻',name:'MALDİV',tagline:'PARADISE ON EARTH',color:'#20D4C0',bg:'#00080c'},
+};
+let introCB=null,introOn=false;
+
+function showCityIntro(key,cb){
+  const info=CI[key];if(!info){cb();return}
+  introCB=cb;introOn=true;
+  const $=id=>document.getElementById(id);
+  const intro=$('cityIntro'),bg=$('ciBg'),card=$('ciCard'),
+        flag=$('ciFlag'),nm=$('ciName'),tag=$('ciTag'),
+        skip=$('ciSkip'),r1=$('ciR1'),r2=$('ciR2'),r3=$('ciR3'),
+        lt=$('ciLT'),lb=$('ciLB');
+  [card,flag,nm,tag,r1,r2,r3,lt,lb,skip].forEach(e=>{e.style.cssText='';e.style.transition='none';e.style.opacity='0'});
+  card.style.transform='scale(0.3) translateY(60px)';
+  flag.style.transform='scale(0) rotate(-20deg)';
+  nm.style.transform='translateY(100%)';
+  bg.style.background=info.bg;
+  [r1,r2,r3].forEach(r=>r.style.borderColor=info.color);
+  lt.style.background=lb.style.background=`linear-gradient(90deg,transparent,${info.color},transparent)`;
+  flag.textContent=info.flag;nm.textContent=info.name;tag.textContent=info.tagline;
+  spawnP(info.color);
+  intro.style.opacity='1';intro.classList.add('active');
+  requestAnimationFrame(()=>{bg.style.transition='opacity 0.4s';bg.style.opacity='0.97'});
+  setTimeout(()=>{lt.style.transition=lb.style.transition='opacity 0.4s';lt.style.opacity=lb.style.opacity='0.6'},200);
+  setTimeout(()=>{card.style.transition='transform 0.6s cubic-bezier(0.16,1,0.3,1),opacity 0.4s';card.style.transform='scale(1) translateY(0)';card.style.opacity='1'},350);
+  setTimeout(()=>{flag.style.transition='transform 0.7s cubic-bezier(0.34,1.6,0.64,1),opacity 0.4s';flag.style.transform='scale(1) rotate(0deg)';flag.style.opacity='1'},500);
+  setTimeout(()=>{nm.style.transition='transform 0.6s cubic-bezier(0.16,1,0.3,1)';nm.style.transform='translateY(0)'},700);
+  setTimeout(()=>{tag.style.transition='opacity 0.5s,transform 0.5s';tag.style.opacity='1';tag.style.transform='translateY(0)'},900);
+  setTimeout(()=>rppl(r1,info.color,0),1000);
+  setTimeout(()=>rppl(r2,info.color,250),1000);
+  setTimeout(()=>rppl(r3,info.color,500),1000);
+  setTimeout(()=>{skip.style.transition='opacity 0.4s';skip.style.opacity='1'},1200);
+  setTimeout(()=>{if(introOn)finishIntro()},3200);
+}
+function rppl(el,c,d){setTimeout(()=>{el.style.width='80px';el.style.height='80px';el.style.opacity='0.7';el.style.transition='all 1.2s ease-out';requestAnimationFrame(()=>setTimeout(()=>{el.style.width='600px';el.style.height='600px';el.style.opacity='0'},50))},d)}
+function finishIntro(){
+  introOn=false;
+  const intro=document.getElementById('cityIntro'),card=document.getElementById('ciCard'),bg=document.getElementById('ciBg');
+  card.style.transition='transform 0.5s cubic-bezier(0.4,0,1,1),opacity 0.4s';card.style.transform='scale(1.3) translateY(-30px)';card.style.opacity='0';
+  bg.style.transition='opacity 0.5s';bg.style.opacity='0';
+  intro.style.transition='opacity 0.5s';intro.style.opacity='0';
+  setTimeout(()=>{intro.classList.remove('active');intro.style.opacity='';document.getElementById('ciParticles').innerHTML='';if(introCB){introCB();introCB=null}},500);
+}
+function skipIntro(){if(introOn)finishIntro()}
+function spawnP(color){
+  const c=document.getElementById('ciParticles');c.innerHTML='';
+  for(let i=0;i<18;i++){const p=document.createElement('div');const s=Math.random()*5+2,x=Math.random()*100,y=Math.random()*100,d=Math.random()*2,dur=Math.random()*3+2;p.style.cssText=`position:absolute;border-radius:50%;width:${s}px;height:${s}px;left:${x}%;top:${y}%;background:${color};opacity:0;animation:pf ${dur}s ${d}s ease-in-out infinite alternate`;c.appendChild(p)}
+  if(!document.getElementById('pfStyle')){const s=document.createElement('style');s.id='pfStyle';s.textContent='@keyframes pf{0%{opacity:0;transform:translateY(0) scale(0)}40%{opacity:0.5}100%{opacity:0;transform:translateY(-40px) scale(1.5)}} @keyframes layerMove{0%{transform:translate(0,0) scale(1)}100%{transform:translate(15px,-10px) scale(1.1)}} @keyframes emojiFloat{0%,100%{transform:translate(-50%,-60%) scale(1)}50%{transform:translate(-50%,-65%) scale(1.05)}}';document.head.appendChild(s)}
+}
+
+// Search on enter
+document.getElementById('searchInput').addEventListener('keydown',e=>{if(e.key==='Enter')doSearch()});
+
+// =====================
+// HAVA PROQNİZU
+// =====================
+const CITY_WEATHER={
+  dubai:{city:'Dubai',country:'AE',lat:25.2,lon:55.3},
+  kahire:{city:'Cairo',country:'EG',lat:30.0,lon:31.2},
+  luxor:{city:'Luxor',country:'EG',lat:25.7,lon:32.6},
+  istanbul:{city:'Istanbul',country:'TR',lat:41.0,lon:28.9},
+  paris:{city:'Paris',country:'FR',lat:48.8,lon:2.3},
+  baku:{city:'Baku',country:'AZ',lat:40.4,lon:49.8},
+  tokyo:{city:'Tokyo',country:'JP',lat:35.6,lon:139.6},
+  bali:{city:'Denpasar',country:'ID',lat:-8.6,lon:115.2},
+  rome:{city:'Rome',country:'IT',lat:41.9,lon:12.5},
+  barcelona:{city:'Barcelona',country:'ES',lat:41.3,lon:2.1},
+  newyork:{city:'New York',country:'US',lat:40.7,lon:-74.0},
+  maldives:{city:'Male',country:'MV',lat:4.1,lon:73.5},
+};
+
+// Hava ikonları
+function getWeatherIcon(code){
+  if(code>=200&&code<300)return'⛈️';
+  if(code>=300&&code<400)return'🌦️';
+  if(code>=500&&code<600)return'🌧️';
+  if(code>=600&&code<700)return'❄️';
+  if(code>=700&&code<800)return'🌫️';
+  if(code===800)return'☀️';
+  if(code===801)return'🌤️';
+  if(code<=804)return'☁️';
+  return'🌡️';
+}
+
+async function loadWeather(cityKey){
+  const wc=CITY_WEATHER[cityKey];
+  const el=document.getElementById('bwWeather');
+  if(!wc||!el){return}
+  el.innerHTML='<div class="bw-loading">⏳</div>';
+  try{
+    // Open-Meteo — tamamilə pulsuz, açar lazım deyil!
+    const url=`https://api.open-meteo.com/v1/forecast?latitude=${wc.lat}&longitude=${wc.lon}&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m,relative_humidity_2m&timezone=auto`;
+    const res=await fetch(url);
+    if(!res.ok)throw new Error('weather fail');
+    const d=await res.json();
+    const cur=d.current;
+    const temp=Math.round(cur.temperature_2m);
+    const feels=Math.round(cur.apparent_temperature);
+    const wcode=cur.weather_code;
+    const icon=getWeatherIcon(wcode);
+    const wind=Math.round(cur.wind_speed_10m);
+    const hum=cur.relative_humidity_2m;
+    const desc=getWeatherDesc(wcode);
+    el.innerHTML=`
+      <div style="display:flex;align-items:center;gap:6px;justify-content:flex-end">
+        <span style="font-size:20px">${icon}</span>
+        <div class="bw-temp">${temp}°C</div>
+      </div>
+      <div class="bw-desc">${desc}</div>
+      <div class="bw-feels">Hiss: ${feels}°C • 💨${wind}km/h • 💧${hum}%</div>
+    `;
+  }catch(e){
+    el.innerHTML='<div class="bw-loading" style="color:#FF8888">⚠️ Hava</div>';
+  }
+}
+
+function getWeatherDesc(code){
+  const map={0:'Aydın',1:'Az Buludlu',2:'Buludlu',3:'Tutqun',45:'Duman',48:'Duman',51:'Çisəli',53:'Çisəli',55:'Çisəli',61:'Yağışlı',63:'Yağışlı',65:'Güclü Yağış',71:'Qarlı',73:'Qarlı',75:'Güclü Qar',80:'Kəskin Yağış',81:'Kəskin Yağış',82:'Güclü Kəskin',95:'Tufan',96:'Tufan+Dolu',99:'Güclü Tufan'};
+  return map[code]||'Dəyişkən';
+}
+
+// =====================
+// VALYUTA KONVERSİYASI
+// =====================
+const CITY_CURRENCY={
+  dubai:   {code:'AED',name:'Dirhəm',symbol:'د.إ',flag:'🇦🇪',rate:3.67},
+  kahire:  {code:'EGP',name:'Misir Poundu',symbol:'E£',flag:'🇪🇬',rate:48.5},
+  luxor:   {code:'EGP',name:'Misir Poundu',symbol:'E£',flag:'🇪🇬',rate:48.5},
+  istanbul:{code:'TRY',name:'Türk Lirəsi',symbol:'₺',flag:'🇹🇷',rate:32.5},
+  paris:   {code:'EUR',name:'Avro',symbol:'€',flag:'🇪🇺',rate:0.92},
+  baku:    {code:'AZN',name:'Manat',symbol:'₼',flag:'🇦🇿',rate:1.70},
+  tokyo:   {code:'JPY',name:'Yapon Yeni',symbol:'¥',flag:'🇯🇵',rate:149.5},
+  bali:    {code:'IDR',name:'Indoneziya Rupiyası',symbol:'Rp',flag:'🇮🇩',rate:15600},
+  rome:    {code:'EUR',name:'Avro',symbol:'€',flag:'🇪🇺',rate:0.92},
+  barcelona:{code:'EUR',name:'Avro',symbol:'€',flag:'🇪🇺',rate:0.92},
+  newyork: {code:'USD',name:'Dollar',symbol:'$',flag:'🇺🇸',rate:1.0},
+  maldives:{code:'MVR',name:'Rufiyaa',symbol:'Rf',flag:'🇲🇻',rate:15.4},
+};
+
+// USD-dən AZN-ə əsas kurs
+const USD_TO_AZN=1.70;
+
+async function loadCurrency(cityKey){
+  const cc=CITY_CURRENCY[cityKey];
+  const el=document.getElementById('bwCurrency');
+  if(!cc||!el)return;
+  el.innerHTML='<div class="bw-loading">⏳</div>';
+  try{
+    // Frankfurter API — pulsuz, açar lazım deyil
+    const res=await fetch(`https://api.frankfurter.app/latest?from=USD&to=${cc.code},AZN`);
+    let usdToLocal=cc.rate;
+    let usdToAzn=USD_TO_AZN;
+    if(res.ok){
+      const d=await res.json();
+      if(d.rates[cc.code])usdToLocal=d.rates[cc.code];
+      if(d.rates['AZN'])usdToAzn=d.rates['AZN'];
+    }
+    // 1 AZN → local
+    const aznToLocal=(usdToLocal/usdToAzn).toFixed(cc.rate>100?0:2);
+    // 100 local → AZN
+    const localToAzn=(100/usdToLocal*usdToAzn).toFixed(2);
+
+    el.innerHTML=`
+      <div class="bw-cur-from">💱 1 USD = ${usdToLocal.toFixed(cc.rate>100?0:2)} ${cc.symbol}</div>
+      <div class="bw-cur-rate">${cc.flag} ${cc.symbol}${cc.rate>100?Math.round(aznToLocal):aznToLocal} = 1 AZN</div>
+      <div class="bw-cur-label">${cc.name}</div>
+      <div class="bw-cur-multi" style="font-size:10px;color:rgba(255,255,255,0.45)">100 ${cc.code} = ${localToAzn} AZN</div>
+    `;
+  }catch(e){
+    // Statik kurs
+    const aznToLocal=(cc.rate/USD_TO_AZN).toFixed(cc.rate>100?0:2);
+    el.innerHTML=`
+      <div class="bw-cur-from">💱 1 USD ≈ ${cc.rate} ${cc.symbol}</div>
+      <div class="bw-cur-rate">${cc.flag} ${cc.symbol}${aznToLocal} = 1 AZN</div>
+      <div class="bw-cur-label">${cc.name}</div>
+    `;
+  }
+}
+
+// =====================
+// RENT CAR
+// =====================
+const CAR_LOCAL={
+  dubai:'https://www.dubairentacar.com',
+  istanbul:'https://www.sixt.com.tr',
+  kahire:'https://www.sixt.com/car-rental/egypt/',
+  luxor:'https://www.sixt.com/car-rental/egypt/',
+  paris:'https://www.sixt.fr',
+  baku:'https://www.rentcar.az',
+  tokyo:'https://www.nipponrentacar.co.jp',
+  bali:'https://balicars.com',
+  rome:'https://www.maggiore.it',
+  barcelona:'https://www.record-go.com',
+  newyork:'https://www.enterprise.com',
+  maldives:'https://visitmaldives.com/transport',
+};
+
+function initCarSection(cityKey){
+  const ci=CITIES[cityKey];
+  if(ci){
+    document.getElementById('carCity').value=ci.name;
+    // Platformalar üçün linklər
+    const q=encodeURIComponent(ci.name);
+    const d1=document.getElementById('carFrom').value||'';
+    const d2=document.getElementById('carTo').value||'';
+    document.getElementById('carRentalLink').href=`https://www.rentalcars.com/SearchResults.do?pickUpLocation=${q}&dropOffLocation=${q}`;
+    document.getElementById('carKayakLink').href=`https://www.kayak.com/cars/${q}/${d1}/${d2}`;
+    document.getElementById('carDiscoverLink').href=`https://www.discovercars.com/car-rental/${ci.name.toLowerCase().replace(' ','-')}`;
+    document.getElementById('carLocalLink').href=CAR_LOCAL[cityKey]||`https://www.rentalcars.com/SearchResults.do?pickUpLocation=${q}`;
+  }
+  // Default tarixlər
+  const d1=new Date();d1.setDate(d1.getDate()+14);
+  const d2=new Date();d2.setDate(d2.getDate()+17);
+  if(!document.getElementById('carFrom').value)document.getElementById('carFrom').value=d1.toISOString().split('T')[0];
+  if(!document.getElementById('carTo').value)document.getElementById('carTo').value=d2.toISOString().split('T')[0];
+}
+
+let selectedCarType='Economy';
+function selectCarType(type,el){
+  selectedCarType=type;
+  document.querySelectorAll('.car-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('carType').value=type;
+}
+
+async function searchCar(){
+  const city=document.getElementById('carCity').value||CITIES[curCity]?.name||'Dubai';
+  const type=selectedCarType||document.getElementById('carType').value||'Economy';
+  const from=document.getElementById('carFrom').value||'';
+  const to=document.getElementById('carTo').value||'';
+
+  document.getElementById('carLoading').classList.add('show');
+  document.getElementById('carResult').classList.remove('show');
+
+  const prompt=`${city} şəhərində ${from} - ${to} tarixlərində ${type} avtomobil icarəsi haqqında məlumat ver.
+
+1. 💰 Orta günlük qiymət (USD)
+2. 🏆 Tövsiyə olunan şirkətlər (Hertz, Avis, Sixt, yerli)
+3. 📋 Sürücülük tələbləri (yaş, sənədlər)
+4. ⚡ Elektrik avtomobil varmı?
+5. 🛣️ Maşınla görməli yerlər (day trip)
+6. 💡 Pul qənaət məsləhəti
+7. Rentalcars.com, Discovercars.com linkini xatırlat
+
+Azərbaycan dilində, qısa, emojili yaz!`;
+
+  try{
+    const txt=await callAI(prompt,600);
+    document.getElementById('carLoading').classList.remove('show');
+    document.getElementById('carResult').innerHTML=txt.replace(/\n/g,'<br>');
+    document.getElementById('carResult').classList.add('show');
+    // Linkləri yenilə
+    const q=encodeURIComponent(city);
+    document.getElementById('carRentalLink').href=`https://www.rentalcars.com/SearchResults.do?pickUpLocation=${q}&pickUpDate=${from}&dropOffDate=${to}`;
+    document.getElementById('carKayakLink').href=`https://www.kayak.com/cars/${q}/${from}/${to}`;
+  }catch(e){
+    document.getElementById('carLoading').classList.remove('show');
+    const msg=e.message==='NO_AI'?'⚠️ AI quraşdırılmayıb. 🔑 düyməsinə basın.':'⚠️ Xəta baş verdi.';
+    document.getElementById('carResult').innerHTML=msg;
+    document.getElementById('carResult').classList.add('show');
+  }
+}
+
+// =====================
+// GOOGLE MAPS
+// =====================
+const CITY_COORDS={
+  dubai:{lat:25.2048,lng:55.2708,zoom:13},
+  kahire:{lat:30.0444,lng:31.2357,zoom:12},
+  luxor:{lat:25.6872,lng:32.6396,zoom:13},
+  istanbul:{lat:41.0082,lng:28.9784,zoom:13},
+  paris:{lat:48.8566,lng:2.3522,zoom:13},
+  baku:{lat:40.4093,lng:49.8671,zoom:13},
+  tokyo:{lat:35.6762,lng:139.6503,zoom:13},
+  bali:{lat:-8.4095,lng:115.1889,zoom:12},
+  rome:{lat:41.9028,lng:12.4964,zoom:13},
+  barcelona:{lat:41.3851,lng:2.1734,zoom:13},
+  newyork:{lat:40.7128,lng:-74.0060,zoom:13},
+  maldives:{lat:4.1755,lng:73.5093,zoom:11},
+};
+
+const MAP_TYPES={
+  tourist:'tourist attractions',
+  restaurant:'restaurants',
+  hotel:'hotels',
+  shopping:'shopping malls',
+  cafe:'cafes coffee shops',
+  hospital:'hospitals emergency',
+  atm:'ATM bank',
+};
+
+let currentMapFilter='tourist';
+
+function initMapsSection(cityKey){
+  const ci=CITIES[cityKey];
+  const coords=CITY_COORDS[cityKey];
+  if(!ci||!coords)return;
+  document.getElementById('mapsSearch').placeholder=`${ci.name}-da axtar...`;
+  loadMap(cityKey,currentMapFilter);
+}
+
+function loadMap(cityKey,filter){
+  const ci=CITIES[cityKey];
+  const coords=CITY_COORDS[cityKey];
+  if(!ci||!coords)return;
+  const query=encodeURIComponent(`${MAP_TYPES[filter]||filter} in ${ci.name}`);
+  const frame=document.getElementById('mapsFrame');
+  // Google Maps Embed — pulsuz, açar lazım deyil
+  frame.src=`https://maps.google.com/maps?q=${query}&t=m&z=${coords.zoom}&output=embed&iwloc=near`;
+  // Action linklər
+  document.getElementById('mapsOpenBtn').href=`https://www.google.com/maps/search/${query}/@${coords.lat},${coords.lng},${coords.zoom}z`;
+  document.getElementById('mapsNavBtn').href=`https://www.google.com/maps/dir//${encodeURIComponent(ci.name)}`;
+}
+
+function filterMap(type,btn){
+  currentMapFilter=type;
+  document.querySelectorAll('.map-chip').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  loadMap(curCity,type);
+}
+
+function searchOnMap(){
+  const q=document.getElementById('mapsSearch').value.trim();
+  if(!q)return;
+  const ci=CITIES[curCity];
+  const coords=CITY_COORDS[curCity];
+  if(!ci||!coords)return;
+  const query=encodeURIComponent(`${q} in ${ci.name}`);
+  document.getElementById('mapsFrame').src=`https://maps.google.com/maps?q=${query}&t=m&z=${coords.zoom}&output=embed&iwloc=near`;
+  document.getElementById('mapsOpenBtn').href=`https://www.google.com/maps/search/${query}`;
+}
+
+// pcard-a maps düyməsi əlavə et
+function renderPlaces(places){
+  document.getElementById('tabPlaces').innerHTML=`<div class="places-grid">${places.map((p,i)=>`
+    <div class="pcard" style="animation-delay:${i*0.08}s;background:linear-gradient(135deg,#1a2a40,#0a1520)" onclick='openDetail(${JSON.stringify(p).replace(/'/g,"\\'")})'>
+      <div class="pcard-img" style="background:none;font-size:52px">${p.emoji}<div class="pcard-type">${TL[p.type]||'Yer'}</div><div class="pcard-rate">${p.rating}</div></div>
+      <div class="pcard-body">
+        <div class="pcard-name">${p.name}</div>
+        <div class="pcard-desc">${p.desc}</div>
+        <div class="pcard-foot"><div class="pcard-price">${p.price}</div><div class="pcard-loc">📍 ${p.location}</div></div>
+        <a class="pcard-maps" href="https://www.google.com/maps/search/${encodeURIComponent(p.mapQ||p.name)}" target="_blank">🗺️ Xəritədə gör</a>
+      </div>
+    </div>
+  `).join('')}</div>`;
+}
+
+// =====================
+// REAL HOTEL SEARCH + AFFILIATE
+// =====================
+
+// Booking.com Affiliate ID — öz ID-nizi buraya yazın
+const BOOKING_AFF_ID='YOUR_AFFILIATE_ID'; // https://www.booking.com/affiliate-program/
+
+function initHotelSearch(cityKey){
+  const ci=CITIES[cityKey];
+  if(ci){
+    document.getElementById('hsCity').value=ci.name;
+    const q=encodeURIComponent(ci.name);
+    // Affiliate linklər — öz ID ilə
+    const affParam=BOOKING_AFF_ID!=='YOUR_AFFILIATE_ID'?`&aid=${BOOKING_AFF_ID}`:'';
+    document.getElementById('hsBooking').href=`https://www.booking.com/searchresults.html?ss=${q}${affParam}`;
+    document.getElementById('hsHotels').href=`https://www.hotels.com/search.do?destination=${q}`;
+    document.getElementById('hsAgoda').href=`https://www.agoda.com/search?city=${q}`;
+    document.getElementById('hsAirbnb').href=`https://www.airbnb.com/s/${q}/homes`;
+  }
+  const d1=new Date();d1.setDate(d1.getDate()+14);
+  const d2=new Date();d2.setDate(d2.getDate()+17);
+  document.getElementById('hsCheckin').value=d1.toISOString().split('T')[0];
+  document.getElementById('hsCheckout').value=d2.toISOString().split('T')[0];
+}
+
+async function searchHotels(){
+  const city=document.getElementById('hsCity').value||'Dubai';
+  const checkin=document.getElementById('hsCheckin').value||'';
+  const checkout=document.getElementById('hsCheckout').value||'';
+  const guests=document.getElementById('hsGuests').value||'2';
+  const budget=document.getElementById('hsBudget').value||'150';
+  const room=document.getElementById('hsRoom').value||'Standard';
+
+  document.getElementById('hsLoading').classList.add('show');
+  document.getElementById('hsResult').classList.remove('show');
+
+  const prompt=`${city} şəhərində ${checkin}–${checkout} tarixlərində ${guests} nəfər üçün ${room} otaq, büdcə $${budget}/gecə.
+
+AI kimi otel tövsiyəsi ver:
+1. 🏨 Top 5 otel adları (real otel adları yaz)
+2. 💰 Orta qiymət aralığı
+3. 📍 Ən yaxşı rayon/məhəllə
+4. ⭐ Hər otel üçün ulduz + xüsusiyyət
+5. 💡 Qənaət məsləhəti (erken rezerv, son dəqiqə)
+6. Booking.com, Agoda linkini xatırlat
+
+Azərbaycan dilində, emojili, praktik yaz!`;
+
+  try{
+    const txt=await callAI(prompt,700);
+    document.getElementById('hsLoading').classList.remove('show');
+    document.getElementById('hsResult').innerHTML=txt.replace(/\n/g,'<br>');
+    document.getElementById('hsResult').classList.add('show');
+    // Booking linkini yenilə
+    const q=encodeURIComponent(city);
+    const affParam=BOOKING_AFF_ID!=='YOUR_AFFILIATE_ID'?`&aid=${BOOKING_AFF_ID}`:'';
+    const ci=document.getElementById('hsCheckin').value;
+    const co=document.getElementById('hsCheckout').value;
+    document.getElementById('hsBooking').href=`https://www.booking.com/searchresults.html?ss=${q}&checkin=${ci}&checkout=${co}&group_adults=${guests}${affParam}`;
+  }catch(e){
+    document.getElementById('hsLoading').classList.remove('show');
+    const msg=e.message==='NO_AI'?'⚠️ AI quraşdırılmayıb. 🔑 düyməsinə basın.':'⚠️ Xəta baş verdi.';
+    document.getElementById('hsResult').innerHTML=msg;
+    document.getElementById('hsResult').classList.add('show');
+  }
+}
+const POPULAR_ROUTES=[
+  {from:'Bakı',to:'Dubai',code:'DXB',flag:'🇦🇪'},
+  {from:'Bakı',to:'İstanbul',code:'IST',flag:'🇹🇷'},
+  {from:'Bakı',to:'Kahirə',code:'CAI',flag:'🇪🇬'},
+  {from:'Bakı',to:'Paris',code:'CDG',flag:'🇫🇷'},
+  {from:'Bakı',to:'Roma',code:'FCO',flag:'🇮🇹'},
+  {from:'Bakı',to:'Tokyo',code:'NRT',flag:'🇯🇵'},
+  {from:'Bakı',to:'Antalya',code:'AYT',flag:'🇹🇷'},
+  {from:'Bakı',to:'Moskva',code:'SVO',flag:'🇷🇺'},
+];
+
+const CITY_AIRPORTS={
+  dubai:'DXB',istanbul:'IST',kahire:'CAI',luxor:'LXR',
+  paris:'CDG',tokyo:'NRT',baku:'GYD',bali:'DPS',
+  rome:'FCO',barcelona:'BCN',newyork:'JFK',maldives:'MLE'
+};
+
+function initFlightSection(cityKey){
+  const airport=CITY_AIRPORTS[cityKey]||'';
+  const ci=CITIES[cityKey];
+  if(ci&&airport){
+    document.getElementById('flTo').value=`${ci.name} (${airport})`;
+  }
+  // Default date — 2 həftə sonra
+  const d=new Date();d.setDate(d.getDate()+14);
+  document.getElementById('flDate').value=d.toISOString().split('T')[0];
+
+  // Populyar chips
+  document.getElementById('flChips').innerHTML=POPULAR_ROUTES.map(r=>`
+    <div class="fl-chip" onclick="setFlightRoute('${r.to}','${r.code}')">${r.flag} ${r.to}</div>
+  `).join('');
+
+  // Platform linklər
+  const from=document.getElementById('flFrom').value||'GYD';
+  const to=airport||'DXB';
+  const date=document.getElementById('flDate').value?.replace(/-/g,'')||'';
+  document.getElementById('fl-sky').href=`https://www.skyscanner.net/transport/flights/${from.toLowerCase()}/${to.toLowerCase()}/${date.slice(2)}/`;
+  document.getElementById('fl-kayak').href=`https://www.kayak.com/flights/${from}-${to}/${document.getElementById('flDate').value||''}`;
+  document.getElementById('fl-google').href=`https://www.google.com/travel/flights?q=flights+from+Baku+to+${ci?.name||'Dubai'}`;
+  document.getElementById('fl-wizz').href=`https://wizzair.com`;
+  document.getElementById('fl-azal').href=`https://azal.az`;
+}
+
+function setFlightRoute(city,code){
+  document.getElementById('flTo').value=`${city} (${code})`;
+  document.querySelectorAll('.fl-chip').forEach(c=>{c.classList.remove('active');if(c.textContent.includes(city))c.classList.add('active')});
+  updateFlightLinks(code);
+}
+
+function updateFlightLinks(toCode){
+  const fromCode='GYD';
+  const date=document.getElementById('flDate').value?.replace(/-/g,'')||'';
+  document.getElementById('fl-sky').href=`https://www.skyscanner.net/transport/flights/${fromCode.toLowerCase()}/${toCode.toLowerCase()}/${date.slice(2)}/`;
+  document.getElementById('fl-kayak').href=`https://www.kayak.com/flights/${fromCode}-${toCode}/${document.getElementById('flDate').value||''}`;
+}
+
+async function searchFlights(){
+  const from=document.getElementById('flFrom').value||'Bakı';
+  const to=document.getElementById('flTo').value||'Dubai';
+  const date=document.getElementById('flDate').value||'';
+  const cls=document.getElementById('flClass').value||'Economy';
+
+  document.getElementById('flLoading').classList.add('show');
+  document.getElementById('flResult').classList.remove('show');
+  document.getElementById('flRetry').style.display='none';
+
+  const prompt=`${from}-dan ${to}-ya ${date} tarixində ${cls} bilet axtarıram.
+1. 💰 Orta bilet qiyməti (USD)
+2. ⏱️ Uçuş müddəti
+3. 🛫 Ən yaxşı aviaşirkətlər
+4. 📅 Ucuz günlər
+5. 🎯 Pul qənaət məsləhətləri
+6. Skyscanner, Google Flights, Kayak, AZAL (azal.az) linklərini xatırlat
+Azərbaycan dilində, qısa, emoji ilə yaz!`;
+
+  try{
+    const txt=await callAI(prompt,600);
+    document.getElementById('flLoading').classList.remove('show');
+    document.getElementById('flResult').innerHTML=txt.replace(/\n/g,'<br>');
+    document.getElementById('flResult').classList.add('show');
+    document.getElementById('flRetry').style.display='flex';
+    const toCode=to.match(/\(([A-Z]+)\)/)?.[1]||'DXB';
+    updateFlightLinks(toCode);
+  }catch(e){
+    document.getElementById('flLoading').classList.remove('show');
+    const msg=e.message==='NO_AI'?'⚠️ AI quraşdırılmayıb. 🔑 düyməsinə basın.':'⚠️ Xəta baş verdi.';
+    document.getElementById('flResult').innerHTML=msg;
+    document.getElementById('flResult').classList.add('show');
+    document.getElementById('flRetry').style.display='flex';
+  }
+}
+
+// =====================
+// eSIM SECTION
+// =====================
+const ESIM_COUNTRIES=[
+  {flag:'🇦🇪',name:'Dubai/UAE'},
+  {flag:'🇹🇷',name:'Türkiyə'},
+  {flag:'🇪🇬',name:'Misir'},
+  {flag:'🇫🇷',name:'Fransa'},
+  {flag:'🇯🇵',name:'Yaponiya'},
+  {flag:'🇮🇩',name:'Bali'},
+  {flag:'🇮🇹',name:'İtaliya'},
+  {flag:'🇺🇸',name:'ABŞ'},
+  {flag:'🇬🇧',name:'İngiltərə'},
+  {flag:'🇩🇪',name:'Almaniya'},
+];
+
+let selectedEsimCountry='Dubai/UAE';
+
+function initEsimSection(cityKey){
+  const ci=CITIES[cityKey];
+  const countryName=ci?.name||'';
+  document.getElementById('esimChips').innerHTML=ESIM_COUNTRIES.map(c=>`
+    <div class="esim-chip${c.name===selectedEsimCountry||c.name.includes(countryName)?' active':''}" 
+         onclick="selectEsimCountry('${c.name}',this)">${c.flag} ${c.name}</div>
+  `).join('');
+  // Cari şəhərə uyğun ölkəni seç
+  const match=ESIM_COUNTRIES.find(c=>c.name.toLowerCase().includes(countryName.toLowerCase()));
+  if(match)selectedEsimCountry=match.name;
+}
+
+function selectEsimCountry(name,el){
+  selectedEsimCountry=name;
+  document.querySelectorAll('.esim-chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+}
+
+async function getEsimAdvice(){
+  document.getElementById('esimLoading').classList.add('show');
+  document.getElementById('esimResult').classList.remove('show');
+
+  const country=selectedEsimCountry||'Dubai';
+  const prompt=`${country} üçün ən yaxşı eSIM planını məsləhət ver.
+
+Cavabda:
+1. 📶 Tövsiyə olunan eSIM (Airalo/Holafly/Yesim/Maya)
+2. 💰 Orta qiymət aralığı
+3. 📊 Data miqdarı (neçə GB lazım?)
+4. ⚡ Aktivasiya necə edilir?
+5. 🏆 Ən yaxşı plan (1 həftə / 1 ay)
+6. ⚠️ Diqqət edilməli şeylər
+
+Airalo.com, Holafly.com, Yesim.app linklərini xatırlat.
+Azərbaycan dilində, qısa, emojili yaz!`;
+
+  try{
+    const txt=await callAI(prompt,500);
+    document.getElementById('esimLoading').classList.remove('show');
+    document.getElementById('esimResult').innerHTML=txt.replace(/\n/g,'<br>');
+    document.getElementById('esimResult').classList.add('show');
+  }catch(e){
+    document.getElementById('esimLoading').classList.remove('show');
+    const msg=e.message==='NO_AI'?'⚠️ AI quraşdırılmayıb. 🔑 düyməsinə basın.':'⚠️ Xəta baş verdi.';
+    document.getElementById('esimResult').innerHTML=msg;
+    document.getElementById('esimResult').classList.add('show');
+  }
+}
+
+// Init
+init();
+</script>
+</body>
+</html>
